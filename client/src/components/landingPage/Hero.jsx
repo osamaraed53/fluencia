@@ -1,5 +1,4 @@
 import React from "react";
-import hero_img from '../../assets/Artboard1.png'
 import {Link }from "react-router-dom"; 
 const Hero = () => {
   return (
@@ -14,7 +13,7 @@ const Hero = () => {
           </p>
           <div className="pt-10 items-center justify-center space-y-3 sm:space-x-6 sm:space-y-0 sm:flex lg:justify-start">
             <div>
-              <Link to="/home/2">
+            <Link to="/home">
               <button class="py-2 px-4 bg-transparent text-fluencia-yellow-first font-semibold border border-fluencia-yellow-first rounded hover:bg-fluencia-yellow-first hover:text-white hover:border-transparent transition ease-in duration-200 transform hover:-translate-y-1 active:translate-y-0">
               Get started
               </button>

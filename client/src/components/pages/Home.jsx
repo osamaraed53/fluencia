@@ -1,22 +1,14 @@
 import React, { useState } from "react";
-import SideBar from "../SideBar";
-import Landing from "./Landing";
 import Tabs from "../Tabs";
 import Class from "../Class";
 import Members from "../Members";
 import {
-  BrowserRouter,
-  Switch,
   Route,
-  Link,
   Routes,
-  useParams,
-  useMatch,
 } from "react-router-dom";
-import Login from "./SginIn";
-import SignUp from "./SignUp";
 import Tasks from "../Tasks";
 import Filter from "./Filter";
+import People from "../People";
 
 const HomeForUser = () => {
   // to make Taps component have reusable
@@ -37,13 +29,13 @@ const HomeForUser = () => {
         <Route
           path="tasks"
           element={
-            <div className="flex flex-col justify-center mt-4">
+            <div className="flex flex-col justify-center mt-4 mb-44 ">
               <Filter/>
               <Tasks />{" "}
               </div>
           }
         />
-        <Route path="people" element={<Members />} />
+        <Route path="people" element={<People/>} />
         <Route index element={<Class />} />
       </Routes>
     </>

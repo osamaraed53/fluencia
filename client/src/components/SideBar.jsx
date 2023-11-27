@@ -13,14 +13,16 @@ const SideBar = ({children ,Menus =[]}) => {
       <div
         className={` ${
           isSidebarOpen ? "md:w-72 md:block w-3/4" : "md:w-20 w-0 p-0 "
-        } bg-fluencia-dark-purple h-screen md:p-5  pt-8 relative duration-300`}
+        } bg-fluencia-dark-purple h-[66rem] md:p-5  pt-8 relative duration-300`}
       >
-        {/* <img
+      <div id="blockOfMenus" className="sticky top-2">
+        <img
           src={`${require("../assets/control.png")}`}
-          className={`absolute cursor-pointer -right-3 top-9 w-7 border-dark-purple
+          className={`absolute cursor-pointer -right-9 top-10 w-7 border-dark-purple
            border-2 rounded-full  ${!isSidebarOpen && "rotate-180 md:block hidden"}`}
           onClick={() => setSidebarOpen(!isSidebarOpen)}
-        /> */}
+        />
+
         <div className="flex gap-x-4 items-center  h-10 w-12">
           <img
             src={logo}
@@ -52,8 +54,9 @@ const SideBar = ({children ,Menus =[]}) => {
             </li>
           ))}
         </ul>
+        </div>
       </div>
-      <div className="h-screen flex-1">
+      <div className="h-[66rem] flex-1">
 
       {children}
 

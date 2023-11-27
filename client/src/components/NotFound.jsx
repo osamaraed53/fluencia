@@ -15,14 +15,13 @@ export default function NotFound() {
           <div className="absolute">
             <div className="">
               <h1 className="my-2 text-gray-800 font-bold text-2xl">
-
               404 - Not Found
               </h1>
               <p className="my-2 text-gray-800">
               Sorry, the page you are looking for does not exist.
               </p>
               <Link to={'/'}>
-                <button className="sm:w-full lg:w-auto my-2 border rounded md py-4 px-8 text-center bg-teal-600 text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-700 focus:ring-opacity-50">
+                <button className="sm:w-full lg:w-auto my-2 border rounded md py-4 px-8 text-center bg-fluencia-yellow-first text-white hover:bg-fluencia-yellow-second focus:outline-none focus:ring-2 focus:ring-teal-700 focus:ring-opacity-50">
                   Home page
                 </button>
               </Link>

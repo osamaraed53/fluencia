@@ -62,15 +62,15 @@ const subadminCreate = async (req, res) => {
   
     try {
       
-       const hashedPassword = await bcrypt.hash(password, 10);
+      //  const hashedPassword = await bcrypt.hash(password, 10);
   
       const user = await adminUserModel.checkEmail(email);
   
       if (!user) {
         return res.status(401).json({ message: 'Invalid email' });
       }
-     const storedHashedPassword = hashedPassword;
-      const passwordMatch = await bcrypt.compare(password, storedHashedPassword);
+    //  const storedHashedPassword = hashedPassword;
+      const passwordMatch = await bcrypt.compare(password, user.password);
       if (!passwordMatch) {
         res.status(400).json({ message: "Email or password is invalid" });
         return;
@@ -107,7 +107,6 @@ const SoftdeleteUser = async (req, res) => {
       const queryText = "UPDATE users SET deleted = TRUE WHERE user_id = $1";
       const values = [user_id];
       const result = await db.query(queryText, values);
-  
       res.status(200).json({ message: "User deleted successfully" });
     } catch (error) {
       console.error(error);

@@ -2,60 +2,77 @@ import React from 'react'
 
 const Contact = () => {
   return (
-    <div className="flex min-h-screen items-center justify-start bg-white">
-    <div className="mx-auto w-full max-w-lg">
-      <h1 className="text-4xl font-medium">Contact us</h1>
-      <p className="mt-3">Email us at help@domain.com or message us here:</p>
-      <form action="https://api.web3forms.com/submit" className="mt-10">
-        {/* This is a working contact form. 
-         Get your free access key from: https://web3forms.com/  */}
-        <input
-          type="hidden"
-          name="access_key"
-          defaultValue="YOUR_ACCESS_KEY_HERE"
-        />
-        <div className="grid gap-6 sm:grid-cols-2">
-          <div className="relative z-0">
-            <input
-              type="text"
-              name="name"
-              className="peer block w-full appearance-none border-0 border-b border-gray-500 bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0"
-              placeholder=" "
-            />
-            <label className="absolute top-3 -z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-blue-600 peer-focus:dark:text-blue-500">
-              Your name
-            </label>
-          </div>
-          <div className="relative z-0">
-            <input
-              type="text"
-              name="email"
-              className="peer block w-full appearance-none border-0 border-b border-gray-500 bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0"
-              placeholder=" "
-            />
-            <label className="absolute top-3 -z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-blue-600 peer-focus:dark:text-blue-500">
-              Your email
-            </label>
-          </div>
-          <div className="relative z-0 col-span-2">
-            <textarea
-              name="message"
-              rows={5}
-              className="peer block w-full appearance-none border-0 border-b border-gray-500 bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0"
-              placeholder=" "
-              defaultValue={""}
-            />
-            <label className="absolute top-3 -z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-blue-600 peer-focus:dark:text-blue-500">
-              Your message
-            </label>
-          </div>
+    <div className="flex items-center justify-center p-12">
+    {/* Author: FormBold Team */}
+    {/* Learn More: https://formbold.com */}
+    <div className="mx-auto w-full max-w-[550px]">
+      <form action="https://formbold.com/s/FORM_ID" method="POST">
+        <div className="mb-5">
+          <label
+            htmlFor="name"
+            className="mb-3 block text-base font-medium text-[#07074D]"
+          >
+            Full Name
+          </label>
+          <input
+            type="text"
+            name="name"
+            id="name"
+            placeholder="Full Name"
+            className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+          />
         </div>
-        <button
-          type="submit"
-          className="mt-5 rounded-md bg-black px-10 py-2 text-white"
-        >
-          Send Message
-        </button>
+        <div className="mb-5">
+          <label
+            htmlFor="email"
+            className="mb-3 block text-base font-medium text-[#07074D]"
+          >
+            Email Address
+          </label>
+          <input
+            type="email"
+            name="email"
+            id="email"
+            placeholder="example@domain.com"
+            className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+          />
+        </div>
+        <div className="mb-5">
+          <label
+            htmlFor="subject"
+            className="mb-3 block text-base font-medium text-[#07074D]"
+          >
+            Subject
+          </label>
+          <input
+            type="text"
+            name="subject"
+            id="subject"
+            placeholder="Enter your subject"
+            className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+          />
+        </div>
+        <div className="mb-5">
+          <label
+            htmlFor="message"
+            className="mb-3 block text-base font-medium text-[#07074D]"
+          >
+            Message
+          </label>
+          <textarea
+            rows={4}
+            name="message"
+            id="message"
+            placeholder="Type your message"
+            className="w-full resize-none rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+            defaultValue={""}
+          />
+        </div>
+        <div>
+          <button className="hover:shadow-form rounded-md bg-fluencia-yellow-first bg-fluencia-yellow-second py-3 px-8 text-base font-semibold text-white outline-none">
+            Submit
+          </button>
+        </div>
       </form>
     </div>
   </div>

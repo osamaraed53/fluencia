@@ -1,9 +1,10 @@
 import React from "react";
 import logo from "../assets/fluencia.png";
+import {Link} from 'react-router-dom'
 
 const Footer = () => {
   return (
-    <footer class="bg-fluencia-dark-purple ">
+    <footer class="bg-fluencia-dark-purple  ">
       <div class="md:px-16 px-4 pb-6 pt-10 sm:px-6  lg:pt-24">
         <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
           <div>
@@ -114,12 +115,12 @@ const Footer = () => {
                 </li>
 
                 <li>
-                  <a
+                  <Link
                     class="text-white transition hover:text-fluencia-blue"
-                    href="/"
+                    to="/contact"
                   >
                     Contact Us
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -171,12 +172,12 @@ const Footer = () => {
 
               <ul class="mt-8 space-y-4 text-sm">
                 <li>
-                  <a
+                  <Link
                     class="text-white transition hover:text-fluencia-blue"
-                    href="/"
+                    to="/faqs"
                   >
                     FAQs
-                  </a>
+                  </Link>
                 </li>
 
                 <li>

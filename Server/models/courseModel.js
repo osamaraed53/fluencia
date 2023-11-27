@@ -1,15 +1,15 @@
 const db = require("../models/db");
 
 
-const addCourse = async (course_name, course_description, start_date, admin_id) => {
+const addCourse = async (course_name, course_description, start_date, price,admin_id) => {
   console.log( admin_id , 111111111111111111111111111111);
     const queryText = `
-      INSERT INTO courses (admin_id, course_name, course_description, start_date)
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO courses (admin_id, course_name, course_description, start_date,price)
+      VALUES ($1, $2, $3, $4, $5)
       RETURNING course_id;
     `;
   
-    const values = [admin_id, course_name, course_description, start_date];
+    const values = [admin_id, course_name, course_description ,start_date,price];
   
     try {
       const result = await db.query(queryText, values);

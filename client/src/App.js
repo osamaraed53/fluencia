@@ -5,9 +5,6 @@ import {
   BrowserRouter,
   Routes,
   Route,
-  Link,
-  useParams,
-  useMatch,
 } from "react-router-dom";
 import SideBarContext from "./context/SideBarContext";
 
@@ -16,28 +13,32 @@ import Footer from "./components/Footer";
 import SideBar from "./components/SideBar";
 import NotFound from "./components/NotFound";
 import Landing from "./components/pages/Landing";
+import Tasks from "./components/Tasks";
+import Filter from "./components/pages/Filter";
 
 // pages
 import Login from "./components/pages/SginIn";
 import SignUp from "./components/pages/SignUp";
 import HomeForUser from "./components/pages/Home";
 import Class from "./components/Class";
+import MainPageOfAdmin from './components/pages/MainPageOfAdmin'
 
-// For test 
-import CreateClass from "./components/CreateClass";
+
+// For test
 import Test from "./components/Test";
-import Members from "./components/Members";
-import Tasks from "./components/Tasks";
-import Filter from "./components/pages/Filter";
+import People from "./components/People";
+import Contact from "./components/Contact";
+import FAQs from "./components/FAQs";
+
 
 function App() {
   const [signIn, setSignin] = useState(false);
- 
+
   // context for sidebar
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
-  // just for test 
-  const [role , setRole] = useState(0);
+  // just for test
+  const [role, setRole] = useState(1);
 
   // Menus for sideBar
   const Menus_for_HomeForUser = [
@@ -49,8 +50,8 @@ function App() {
     { title: "daaaa", src: "control" },
   ];
 
- const Menus_for_Sidebar = (role == 1 ) ? (Menus_for_HomeForAdmin ) : (Menus_for_HomeForUser)
- 
+
+
   return (
     <div className="App">
       <BrowserRouter>
@@ -62,37 +63,86 @@ function App() {
             <Route path="/signUp" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
             <Route path="*" element={<NotFound />} />
-            {/* end  main routs */}
-            
+            <Route path="/contact" element={<Contact/>}/>
+            <Route path="/faqs" element={<FAQs/>} />
+            <Route path="/adminSignIn" element={<adminSignIn/>} />
+            {/* <Route path="/main/addNewCourse" element={<AddNewCourse/>} /> */}
+             {/* end  main routs */}
 
-            {/* main page for Users 'Home' Routs */}
-            <Route
-              path={role==1 ? ('/home/:id') : ('/home')} 
+            {/* main page for SupAdmin 'Home' Routs */}
+            {role == 1 && (
+             <>            
+              <Route
+                path={"/main"}
+                element={
+                  <SideBar Menus={Menus_for_HomeForAdmin}>
+                    <MainPageOfAdmin/>
+                  </SideBar>
+                }
+              />
+
+              <Route
+              path={"/main/home/:id"}
               element={
-                <SideBar Menus={Menus_for_Sidebar}>
+                <SideBar Menus={Menus_for_HomeForAdmin}>
                   <HomeForUser />
                 </SideBar>
               }
             >
-              <Route path="class" element={<Class/>} />
+
+              <Route path="class" element={<Class />} />
               <Route
-          path="tasks"
-          element={
-            <>
-              <Filter/>
-              <Tasks />{" "}
-              </>
-          }
-        />
-              <Route path="people" element={<Members/>} />
-              <Route index element={`${(role==1) ? <Class/> : <Class/>  }`} />
+                path="tasks"
+                element={
+                  <>
+                    <Filter />
+                    <Tasks />{" "}
+                  </>
+                }
+              />
+              <Route path="people" element={
+                <People/>
+            } />
+              <Route index element={<Class />} />
+            </Route>
+              
+            </>
+
+            )}
+
+            {/* end  main page for SupAdmin 'Home' Routs */}
+
+
+
+
+            {/* main page for Users 'Home' Routs */}
+            <Route
+              path={"/home"}
+              element={
+                <SideBar Menus={Menus_for_HomeForUser}>
+                  <HomeForUser />
+                </SideBar>
+              }
+            >
+              <Route path="class" element={<Class />} />
+              <Route
+                path="tasks"
+                element={
+                  <>
+                    <Filter />
+                    <Tasks />{" "}
+                  </>
+                }
+              />
+              <Route path="people" element={<People/>} />
+              <Route index element={<Class />} />
             </Route>
 
-         {/* End  main page for Users 'Home' Routs */}
-             
-              {/* for test  */}
-              <Route path="/not" element={<Tasks/>} />
-              {/* for test  */}
+            {/* End  main page for Users 'Home' Routs */}
+
+            {/* for test  */}
+            <Route path="/not" element={<Test/>} />
+            {/* for test  */}
           </Routes>
           <Footer />
         </SideBarContext.Provider>

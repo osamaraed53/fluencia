@@ -7,6 +7,9 @@ router.post("/addTask",authorize.authorize,taskController.addTask);
 router.put("/UpdateTask/:task_id",authorize.authorize,taskController.UpdateTask);
 router.delete("/SoftdeleteTask/:task_id",authorize.authorize,taskController.SoftdeleteTask);
 router.put("/RestoreTask/:task_id",authorize.authorize,taskController.RestoreTask);
+
+
+
 router.get("/GetTaskes",taskController.GetTaskes);
 
 

@@ -1,7 +1,7 @@
 
 import React from 'react'
 
-const Members = () => {
+const Members = ({title}) => {
     const members = [
         {
             img: "https://api.uifaces.co/our-content/donated/xZ4wg2Xj.jpg",
@@ -26,14 +26,14 @@ const Members = () => {
         <div className="max-w-2xl mx-auto px-4">
         <div className="items-start justify-between sm:flex">
             <div>
-                <h4 className="text-gray-800 text-xl font-semibold">All Student</h4>
-                <p className="mt-2 text-gray-600 text-base sm:text-sm">Text text text text</p>
+                <h4 className="text-gray-800 text-xl font-semibold">{title}</h4>
+                <p className="mt-2 text-gray-600 text-base sm:text-sm">{title}</p>
             </div>
             <a href="javascript:void(0)" className="inline-flex items-center justify-center gap-1 py-2 px-3 mt-2 font-medium text-sm text-center text-white bg-fluencia-yellow-first hover:bg-fluencia-yellow-second active:bg-fluencia-yellow-second rounded-lg sm:mt-0">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m6-6H6" />
                 </svg>
-                Add Student
+                Add 
             </a>
         </div>
         <ul className="mt-12 divide-y">

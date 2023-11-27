@@ -90,8 +90,9 @@ const signup = async (req, res) => {
   }
  }
  catch (error) {
+    // osama change  message from  "Internal server error"  to "Error registering user"
     console.error('Error registering user:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: 'Error registering user:' });
   }
 };
 //____________________________________________________________________________________________________
@@ -101,16 +102,13 @@ const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    
-     const hashedPassword = await bcrypt.hash(password, 10);
-
+  
     const user = await UserModel.checkEmail(email);
-
     if (!user) {
       return res.status(401).json({ message: 'Invalid email' });
     }
-   const storedHashedPassword = hashedPassword;
-    const passwordMatch = await bcrypt.compare(password, storedHashedPassword);
+    const passwordMatch = await bcrypt.compare(password,user.password);
+
     if (!passwordMatch) {
       res.status(400).json({ message: "Email or password is invalid" });
       return;
@@ -131,8 +129,8 @@ const login = async (req, res) => {
       token: token,
       user_id: user.user_id,
     });
-    console.log(token);
-    console.log(user.user_id);
+    // console.log(token);
+    // console.log(user.user_id);
   } catch (error) {
     console.error('Error logging in:', error);
     res.status(500).json({ message: 'Internal server error' });

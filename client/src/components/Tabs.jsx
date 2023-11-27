@@ -21,6 +21,7 @@ const Tabs = ({ tabs = [], active, setActive }) => {
               key={tab.id}
               onClick={() => setActive(tab.id)}
               className={`
+              
               text-gray-600 py-2 px-4 rounded-lg hover:bg-gray-200 focus:outline-none
             `}
             >

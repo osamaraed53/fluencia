@@ -1,22 +1,24 @@
 import React from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../../ReduxSlice/AuthenticationSlice";
-const Login = () => {
+import { login } from "../../ReduxSlice/AuthenticationAdminSlice";
+const LoginForAdmin = () => {
   // state to save data from form
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  const auth = useSelector((state) => state.auth.isAuthenticated);
+
+  
+  const auth = useSelector((state) => state.authForAdmin.isAuthenticated);
   if (auth == false) {
     localStorage.clear();
   }
 
   // get data from Redux store
-  const Autherror = useSelector((state) => state.auth.error);
+  const Autherror = useSelector((state) => state.authForAdmin.error);
   const dispatch = useDispatch();
-  // console.log("osama",auth)
+
 
   // Function to handle input changes
   const handleInputChange = (e) => {
@@ -357,4 +359,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginForAdmin;

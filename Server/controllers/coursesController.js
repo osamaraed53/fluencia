@@ -3,16 +3,15 @@ const CourseModel = require('../models/courseModel');
 
 
 async function addCourse(req, res) {
-  console.log(111111111111111111111111);
   console.log(req.user.user_id);
   // const admin_id = req.params.Teacher_id;
-  const { course_name, course_description, start_date } = req.body;
+  const { course_name, course_description, start_date,price } = req.body;
   // const admin_id = req.user.user_id;
 
 
   try {
     const usid = req.user.user_id;
-    const newCourseId = await CourseModel.addCourse( course_name, course_description, start_date, usid);
+    const newCourseId = await CourseModel.addCourse( course_name, course_description, start_date,price, usid);
 
     res.status(201).json({ message: "Course added successfully", course_id: newCourseId });
   } catch (error) {

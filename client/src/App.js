@@ -22,7 +22,7 @@ import SignUp from "./components/pages/SignUp";
 import HomeForUser from "./components/pages/Home";
 import Class from "./components/Class";
 import MainPageOfAdmin from './components/pages/MainPageOfAdmin'
-
+import LoginForAdmin from './components/pages/SignInForAdmin'
 
 // For test
 import Test from "./components/Test";
@@ -65,7 +65,7 @@ function App() {
             <Route path="*" element={<NotFound />} />
             <Route path="/contact" element={<Contact/>}/>
             <Route path="/faqs" element={<FAQs/>} />
-            <Route path="/adminSignIn" element={<adminSignIn/>} />
+            <Route path="/adminSignIn" element={<LoginForAdmin/>} />
             {/* <Route path="/main/addNewCourse" element={<AddNewCourse/>} /> */}
              {/* end  main routs */}
 

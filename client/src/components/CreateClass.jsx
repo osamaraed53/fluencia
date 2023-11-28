@@ -9,7 +9,6 @@ function AddNewCourse({ isOpenAddNewClass, setOpenAddNewClass }) {
   const data = useSelector((state)=>state.course.courses)
   const dispatch = useDispatch()
   // console.log(errors)
-  console.log(data)
  
   
   // handle Data
@@ -34,6 +33,7 @@ function AddNewCourse({ isOpenAddNewClass, setOpenAddNewClass }) {
 
   const createClass = async (e) => {
     e.preventDefault();
+    console.log(formData)
     dispatch(addCourse(formData));
   };
 
@@ -84,7 +84,7 @@ function AddNewCourse({ isOpenAddNewClass, setOpenAddNewClass }) {
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      selectedDate: new Date(e.target.value),
+                      start_date: new Date(e.target.value),
                     })
                   }
                   className="mt-1 p-2 w-full border border-gray-300 rounded-md"

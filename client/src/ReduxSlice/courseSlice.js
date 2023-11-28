@@ -1,11 +1,24 @@
 // courseActions.js
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import Cookies from 'js-cookie';
+
+
+const token = Cookies.get("accessToken"); // Replace with your actual token
+
+const headers = {
+  'Authorization': `Bearer ${token}`,
+  'Content-Type': 'application/json', // Add other headers as needed
+};
+
+
 
 // Action to fetch courses
-export const fetchCourses = () => async (dispatch) => {
+export  const fetchActiveCourses = () => async (dispatch) => {
+ 
+
   try {
-    const response = await axios.get("http://localhost:3000/GetCourses");
+    const response = await axios.get("http://localhost:3000/GetCourses",{ headers }); 
     const courses = response.data;
     dispatch(setCourses(courses));
     dispatch(clearCourseError());
@@ -14,12 +27,25 @@ export const fetchCourses = () => async (dispatch) => {
   }
 };
 
+// Action to fetch HIDDEN courses
+export const fetchHiddenCourses = () => async (dispatch) => {
+  try {
+    const response = await axios.get("http://localhost:3000/GetCoursedeleted",{ headers }); 
+    const courses = response.data;
+    dispatch(setHiddinCourses(courses));
+    dispatch(clearCourseError());
+  } catch (error) {
+    // I'm set data in  state but in s
+    console.log(error)
+  }
+};
+
 // Action to add a new course
 export const addCourse = (courseData) => async (dispatch) => {
   try {
-    const response = await axios.post("http://localhost:3000/addCourse", courseData);
-    const newCourse = response;
-    console.log(newCourse)
+    const response = await axios.post("http://localhost:3000/addCourse", courseData, { headers });
+    const newCourse = response.data; // Assuming the response contains the new course data
+    console.log(newCourse);
     dispatch(addNewCourse(newCourse));
     dispatch(clearCourseError());
   } catch (error) {
@@ -28,9 +54,9 @@ export const addCourse = (courseData) => async (dispatch) => {
 };
 
 // Action to update a course
-export const updateCourse = (courseId, updatedData) => async (dispatch) => {
+export const updateCourse = (courseId, updatedData) => async (dispatch) => { //not
   try {
-    const response = await axios.put(`http://localhost:3000/UpdateCourse/${courseId}`, updatedData);
+    const response = await axios.put(`http://localhost:3000/UpdateCourse/${courseId}`, updatedData,{ headers}); 
     const updatedCourse = response.data;
     dispatch(updateExistingCourse(updatedCourse));
     dispatch(clearCourseError());
@@ -40,9 +66,9 @@ export const updateCourse = (courseId, updatedData) => async (dispatch) => {
 };
 
 // Action to soft delete a course
-export const softDeleteCourse = (courseId) => async (dispatch) => {
+export const softDeleteCourse = (courseId) => async (dispatch) => { 
   try {
-    await axios.delete(`http://localhost:3000/SoftdeleteCourse/${courseId}`);
+    await axios.put(`http://localhost:3000/SoftdeleteCourse/${courseId}`,{},{ headers}); 
     dispatch(softDeleteExistingCourse(courseId));
     dispatch(clearCourseError());
   } catch (error) {
@@ -53,24 +79,27 @@ export const softDeleteCourse = (courseId) => async (dispatch) => {
 // Action to restore a soft-deleted course
 export const restoreCourse = (courseId) => async (dispatch) => {
   try {
-    await axios.put(`http://localhost:3000/RestoreCourse/${courseId}`);
+    await axios.put(`http://localhost:3000/RestoreCourse/${courseId}`,{},{ headers });
     dispatch(restoreSoftDeletedCourse(courseId));
     dispatch(clearCourseError());
   } catch (error) {
-    dispatch(setCourseError("Error restoring the course. Please try again."));
+    dispatch(setCourseError("Error res toring the course. Please try again."));
   }
 };
-
 // courseSlice.js
 const courseSlice = createSlice({
   name: "course",
   initialState: {
     courses: [],
+    hiddenCourses : [],
     courseError: null,
   },
   reducers: {
     setCourses: (state, action) => {
       state.courses = action.payload;
+    },
+    setHiddinCourses: (state, action) => {
+      state.hiddenCourses = action.payload;
     },
     addNewCourse: (state, action) => {
       state.courses.push(action.payload);
@@ -110,6 +139,7 @@ export const {
   restoreSoftDeletedCourse,
   setCourseError,
   clearCourseError,
+  setHiddinCourses
 } = courseSlice.actions;
 
 export default courseSlice.reducer;

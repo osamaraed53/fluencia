@@ -6,13 +6,13 @@ const upload = multer();
 //  const verify= require('../middlewares/verify')
 const authorize= require('../middlewares/authorization')
 
-router.post("/signup",userController.signup);
-router.post("/login",userController.login );
-router.put("/updateUser",authorize.authorize,userController.updateUser );
+router.post("/signup",userController.signup);//
+router.post("/login",userController.login );//
+router.put("/updateUser",authorize.authorize,userController.updateUser );//no
 
 
 
-router.put("/submitTask/:users_task_id",authorize.authorize,userController.imageProduct,userController.submitTask );
+router.put("/submitTask/:users_task_id",authorize.authorize,userController.imageProduct,userController.submitTask );//no 
 
 
 

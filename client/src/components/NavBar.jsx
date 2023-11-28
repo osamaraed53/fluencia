@@ -12,6 +12,9 @@ const NavBar = () => {
   // to change navbar and sign out
   const signInUser = useSelector((state) => state.auth.isAuthenticated);
   const signInAdmin = useSelector((state) => state.authForAdmin.isAuthenticated);
+  console.log(signInUser)
+  console.log(signInAdmin)
+
   const dispatch = useDispatch();
   //  I am use Navigate To make the page reload
   const navigate = useNavigate();
@@ -35,7 +38,7 @@ const NavBar = () => {
 
   //  to chamge nav bar if login Or not
   const loginNav =
-    signInUser || signInAdmin ? (
+    (signInUser || signInAdmin )? (
       <div className="flex justify-center items-center md:pr-16">
         <button
           onClick={toggleDropdown}

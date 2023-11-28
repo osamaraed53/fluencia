@@ -28,7 +28,7 @@ export const login = (userData) => async (dispatch) => {
 export const signUp = (userData) => async (dispatch) => {
   try {
     // Assuming your login endpoint is at /login
-    const response = await axios.post("http://localhost:3000/signup", userData);
+    const response = await axios.post("/subadminCreate", userData);
     const user = response.data;
     dispatch(setSignUp(user));
     dispatch(clearError());
@@ -50,8 +50,6 @@ export const signUp = (userData) => async (dispatch) => {
     dispatch(setError("Invalid credentials. Please try again."));
   }
 };
-
-
 
 
 // authSlice.

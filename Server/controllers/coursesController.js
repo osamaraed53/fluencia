@@ -3,7 +3,7 @@ const CourseModel = require('../models/courseModel');
 
 
 async function addCourse(req, res) {
-  console.log(req.user.user_id);
+  console.log("fclrfcrf",req.user.user_id);
   // const admin_id = req.params.Teacher_id;
   const { course_name, course_description, start_date,price } = req.body;
   // const admin_id = req.user.user_id;
@@ -43,7 +43,7 @@ async function addCourse(req, res) {
   async function SoftdeleteCourse(req, res) {
     const course_id = req.params.course_id;
     const usid = req.user.user_id;
-
+    console.log("I am in controller soft delete" , course_id);
     try {
       await CourseModel.SoftdeleteCourse(course_id,usid);
   

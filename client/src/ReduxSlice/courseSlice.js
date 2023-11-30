@@ -1,24 +1,22 @@
 // courseActions.js
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
-
-const token = Cookies.get("accessToken"); // Replace with your actual token
-
+// get token frm cookies to use in Authorization
+const token = Cookies.get("accessToken");
 const headers = {
-  'Authorization': `Bearer ${token}`,
-  'Content-Type': 'application/json', // Add other headers as needed
+  Authorization: `Bearer ${token}`,
+  "Content-Type": "application/json",
 };
 
-
-
 // Action to fetch courses
-export  const fetchActiveCourses = () => async (dispatch) => {
- 
 
+export const fetchActiveCourses = () => async (dispatch) => {
   try {
-    const response = await axios.get("http://localhost:3000/GetCourses",{ headers }); 
+    const response = await axios.get("http://localhost:3000/GetCourses", {
+      headers,
+    }); //
     const courses = response.data;
     dispatch(setCourses(courses));
     dispatch(clearCourseError());
@@ -26,24 +24,30 @@ export  const fetchActiveCourses = () => async (dispatch) => {
     dispatch(setCourseError("Error fetching courses. Please try again."));
   }
 };
-
 // Action to fetch HIDDEN courses
 export const fetchHiddenCourses = () => async (dispatch) => {
   try {
-    const response = await axios.get("http://localhost:3000/GetCoursedeleted",{ headers }); 
+    const response = await axios.get("http://localhost:3000/GetCoursedeleted", {
+      headers,
+    }); //
     const courses = response.data;
     dispatch(setHiddinCourses(courses));
+    console.log(courses)
     dispatch(clearCourseError());
   } catch (error) {
     // I'm set data in  state but in s
-    console.log(error)
+    console.log(error);
   }
 };
 
 // Action to add a new course
 export const addCourse = (courseData) => async (dispatch) => {
   try {
-    const response = await axios.post("http://localhost:3000/addCourse", courseData, { headers });
+    const response = await axios.post(
+      "http://localhost:3000/addCourse",
+      courseData,
+      { headers }
+    ); //
     const newCourse = response.data; // Assuming the response contains the new course data
     console.log(newCourse);
     dispatch(addNewCourse(newCourse));
@@ -54,9 +58,14 @@ export const addCourse = (courseData) => async (dispatch) => {
 };
 
 // Action to update a course
-export const updateCourse = (courseId, updatedData) => async (dispatch) => { //not
+export const updateCourse = (courseId, updatedData) => async (dispatch) => {
+  //not
   try {
-    const response = await axios.put(`http://localhost:3000/UpdateCourse/${courseId}`, updatedData,{ headers}); 
+    const response = await axios.put(
+      `http://localhost:3000/UpdateCourse/${courseId}`,
+      updatedData,
+      { headers }
+    );
     const updatedCourse = response.data;
     dispatch(updateExistingCourse(updatedCourse));
     dispatch(clearCourseError());
@@ -66,9 +75,13 @@ export const updateCourse = (courseId, updatedData) => async (dispatch) => { //n
 };
 
 // Action to soft delete a course
-export const softDeleteCourse = (courseId) => async (dispatch) => { 
+export const softDeleteCourse = (courseId) => async (dispatch) => {
   try {
-    await axios.put(`http://localhost:3000/SoftdeleteCourse/${courseId}`,{},{ headers}); 
+    await axios.put(
+      `http://localhost:3000/SoftdeleteCourse/${courseId}`,
+      {},
+      { headers }
+    ); //
     dispatch(softDeleteExistingCourse(courseId));
     dispatch(clearCourseError());
   } catch (error) {
@@ -79,19 +92,24 @@ export const softDeleteCourse = (courseId) => async (dispatch) => {
 // Action to restore a soft-deleted course
 export const restoreCourse = (courseId) => async (dispatch) => {
   try {
-    await axios.put(`http://localhost:3000/RestoreCourse/${courseId}`,{},{ headers });
+    await axios.put(
+      `http://localhost:3000/RestoreCourse/${courseId}`,
+      {},
+      { headers }
+    ); //
     dispatch(restoreSoftDeletedCourse(courseId));
     dispatch(clearCourseError());
   } catch (error) {
     dispatch(setCourseError("Error res toring the course. Please try again."));
   }
 };
+
 // courseSlice.js
 const courseSlice = createSlice({
   name: "course",
   initialState: {
     courses: [],
-    hiddenCourses : [],
+    hiddenCourses: [],
     courseError: null,
   },
   reducers: {
@@ -106,18 +124,24 @@ const courseSlice = createSlice({
     },
     updateExistingCourse: (state, action) => {
       const updatedCourse = action.payload;
-      const index = state.courses.findIndex(course => course.id === updatedCourse.id);
+      const index = state.courses.findIndex(
+        (course) => course.id === updatedCourse.id
+      );
       if (index !== -1) {
         state.courses[index] = updatedCourse;
       }
     },
     softDeleteExistingCourse: (state, action) => {
       const deletedCourseId = action.payload;
-      state.courses = state.courses.filter(course => course.id !== deletedCourseId);
+      state.courses = state.courses.filter(
+        (course) => course.id !== deletedCourseId
+      );
     },
     restoreSoftDeletedCourse: (state, action) => {
       const restoredCourseId = action.payload;
-      const deletedCourse = state.courses.find(course => course.id === restoredCourseId);
+      const deletedCourse = state.courses.find(
+        (course) => course.id === restoredCourseId
+      );
       if (deletedCourse) {
         deletedCourse.isDeleted = false;
       }
@@ -139,7 +163,7 @@ export const {
   restoreSoftDeletedCourse,
   setCourseError,
   clearCourseError,
-  setHiddinCourses
+  setHiddinCourses,
 } = courseSlice.actions;
 
 export default courseSlice.reducer;

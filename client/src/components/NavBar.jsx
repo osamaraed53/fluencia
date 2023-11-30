@@ -5,6 +5,7 @@ import SideBarContext from "../context/SideBarContext";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../ReduxSlice/AuthenticationSlice";
 import {logoutAdmin} from '../ReduxSlice/AuthenticationAdminSlice';
+import Cookies from "js-cookie";
 
 const NavBar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -12,8 +13,17 @@ const NavBar = () => {
   // to change navbar and sign out
   const signInUser = useSelector((state) => state.auth.isAuthenticated);
   const signInAdmin = useSelector((state) => state.authForAdmin.isAuthenticated);
-  console.log(signInUser)
-  console.log(signInAdmin)
+
+
+
+  // if have token before 
+  const token = Cookies.get("accessToken")
+  if(token){
+    if(signInUser ===false && signInAdmin===false){
+      Cookies.remove("accessToken")
+    }
+    
+  }
 
   const dispatch = useDispatch();
   //  I am use Navigate To make the page reload
@@ -29,6 +39,7 @@ const NavBar = () => {
     if(signInUser == true){
     dispatch(logout());
     window.sessionStorage.clear();
+    Cookies.remove("accessToken")
     }
     if(signInAdmin == true){
       dispatch(logoutAdmin());

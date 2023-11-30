@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Cookies from 'js-cookie';
+
 // import { useNavigate } from "react-router-dom";
 
 
@@ -12,10 +14,12 @@ export const login = (userData) => async (dispatch) => {
   try {
     // Assuming your login endpoint is at /login
     const response = await axios.post("http://localhost:3000/login", userData);
-    const user = response.data.user_id;
+    const user = response.data;
     // console.log("login axios in action", user)
-    dispatch(setLogin(user));
+    dispatch(setLogin(user.user_id));
     dispatch(clearError());
+    Cookies.set("accessToken",user.token)
+
     setTimeout(() => {
       window.location.href = '/home';
     },  1000);
@@ -28,7 +32,7 @@ export const login = (userData) => async (dispatch) => {
 export const signUp = (userData) => async (dispatch) => {
   try {
     // Assuming your login endpoint is at /login
-    const response = await axios.post("/subadminCreate", userData);
+    const response = await axios.post("http://localhost:3000/signup", userData);
     const user = response.data;
     dispatch(setSignUp(user));
     dispatch(clearError());

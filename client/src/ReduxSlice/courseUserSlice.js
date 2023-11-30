@@ -1,11 +1,21 @@
 // courseUserActions.js
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import Cookies from "js-cookie";
+
+// get token frm cookies to use in Authorization
+const token = Cookies.get("accessToken"); 
+const headers = {
+  'Authorization': `Bearer ${token}`,
+  'Content-Type': 'application/json', 
+};
+
 
 // Action to add a course to a user
-export const addCourseToUser = (userId, courseId) => async (dispatch) => {
+export const addCourseToUser = (userId, courseId) => async (dispatch) => {   // 
   try {
-    await axios.post(`http://localhost:3000/addCoursetoUser/${userId}/${courseId}`);
+    const response = await axios.post(`http://localhost:3000/addCoursetoUser/${userId}/${courseId}`,{},{headers});
+    alert("done")
     dispatch(addCourseToUserSuccess({ userId, courseId }));
     dispatch(clearCourseUserError());
   } catch (error) {
@@ -25,11 +35,12 @@ export const updateCourseForUser = (courseUserId, updatedData) => async (dispatc
 };
 
 // Action to delete a course for a user
-export const deleteCourseForUser = (courseUserId) => async (dispatch) => {
+export const deleteCourseForUser = (course_user_id) => async (dispatch) => {
   try {
-    await axios.delete(`http://localhost:3000/deleteCourseForUser/${courseUserId}`);
-    dispatch(deleteCourseForUserSuccess(courseUserId));
+    await axios.delete(`http://localhost:3000/deleteCourseForUser/${course_user_id}`,{headers});
+    dispatch(deleteCourseForUserSuccess(course_user_id));
     dispatch(clearCourseUserError());
+    alert("done")
   } catch (error) {
     dispatch(setCourseUserError("Error deleting course for user. Please try again."));
   }
@@ -47,9 +58,9 @@ export const restoreCourseForUser = (courseUserId) => async (dispatch) => {
 };
 
 // Action to fetch courses for a user
-export const fetchCoursesForUser = (userId) => async (dispatch) => {
+export const fetchCoursesForUser = () => async (dispatch) => { //
   try {
-    const response = await axios.get(`http://localhost:3000/getCoursesForUser/${userId}`);
+    const response = await axios.get(`http://localhost:3000/GetUserCourse`,{headers});
     const userCourses = response.data;
     dispatch(setCoursesForUser(userCourses));
     dispatch(clearCourseUserError());
@@ -58,11 +69,49 @@ export const fetchCoursesForUser = (userId) => async (dispatch) => {
   }
 };
 
+// Action to fetch course By Id 
+
+export  const fetchCourseById = (course_id) => async (dispatch) => {
+  try {
+    const response = await axios.get(`http://localhost:3000/GetCourseById/${course_id}`,{ headers }); //
+    const courses = response.data;
+    dispatch(setCoursesForUser(courses));
+    dispatch(clearCourseUserError());
+  } catch (error) {
+    dispatch(setCourseUserError("Error fetching courses. Please try again."));
+  }
+};
+export  const fetchTeacher = (course_id) => async (dispatch) => {
+  try {
+    const response = await axios.get(`http://localhost:3000/getCourseAdmin/${course_id}`,{ headers }); //
+    const courses = response.data;
+    dispatch(setTeachersForCourse(courses));
+    console.log(courses)
+
+    dispatch(clearCourseUserError());
+  } catch (error) {
+    dispatch(setCourseUserError("Error fetching courses. Please try again."));
+  }
+};
+export  const fetchStudent = (course_id) => async (dispatch) => {
+  try {
+    const response = await axios.get(`http://localhost:3000/getStudentsInCourse/${course_id}`,{ headers }); //
+    const courses = response.data;
+    dispatch(setStudentsForCourse(courses));
+    dispatch(clearCourseUserError());
+  } catch (error) {
+    dispatch(setCourseUserError("Error fetching courses. Please try again."));
+  }
+};
+
+
 // courseUserSlice.js
 const courseUserSlice = createSlice({
   name: "courseUser",
   initialState: {
     userCourses: [],
+    students : [],
+    teachers : [],
     courseUserError: null,
   },
   reducers: {
@@ -91,6 +140,12 @@ const courseUserSlice = createSlice({
     setCoursesForUser: (state, action) => {
       state.userCourses = action.payload;
     },
+    setStudentsForCourse: (state, action) => {
+      state.students = action.payload;
+    },
+    setTeachersForCourse: (state, action) => {
+      state.teachers = action.payload;
+    },
     setCourseUserError: (state, action) => {
       state.courseUserError = action.payload;
     },
@@ -108,6 +163,8 @@ export const {
   setCoursesForUser,
   setCourseUserError,
   clearCourseUserError,
+  setTeachersForCourse,
+  setStudentsForCourse
 } = courseUserSlice.actions;
 
 export default courseUserSlice.reducer;

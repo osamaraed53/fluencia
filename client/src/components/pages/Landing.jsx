@@ -6,6 +6,7 @@ import ServiceOne from '../landingPage/ServiceOne'
 import ServiceTwo from '../landingPage/ServiceTwo'
 import ServiceThree from '../landingPage/ServiceThree'
 import WeAre from '../landingPage/WeAre'
+import PayPlans from '../PayPlans'
 
 const Landing = () => {
 
@@ -20,6 +21,7 @@ const Landing = () => {
     <ServiceTwo/>
     <ServiceThree/>
     <WeAre/>
+    <PayPlans/>
     </>
   )
 }

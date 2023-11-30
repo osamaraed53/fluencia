@@ -17,7 +17,7 @@ async function addTask(req, res) {
       console.error("Failed to add Task in the controller: ", error);
       res.status(500).json({ error: "Failed to add Task" });
     }
-  }
+  } 
 
 //____________________________________________________________________________________________________
 

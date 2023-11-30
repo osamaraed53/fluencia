@@ -3,15 +3,15 @@ const CourseModel = require('../models/courseModel');
 
 
 async function addCourse(req, res) {
-  console.log("fclrfcrf",req.user.user_id);
+  console.log(req.user.user_id);
   // const admin_id = req.params.Teacher_id;
-  const { course_name, course_description, start_date,price } = req.body;
+  const { course_name, course_description, start_date } = req.body;
   // const admin_id = req.user.user_id;
 
 
   try {
     const usid = req.user.user_id;
-    const newCourseId = await CourseModel.addCourse( course_name, course_description, start_date,price, usid);
+    const newCourseId = await CourseModel.addCourse( course_name, course_description, start_date, usid);
 
     res.status(201).json({ message: "Course added successfully", course_id: newCourseId });
   } catch (error) {
@@ -43,7 +43,7 @@ async function addCourse(req, res) {
   async function SoftdeleteCourse(req, res) {
     const course_id = req.params.course_id;
     const usid = req.user.user_id;
-    console.log("I am in controller soft delete" , course_id);
+    console.log("okpkmldslkmcsdklmscdlkmsvdmlkscSkmcclx MKlmnk",course_id,usid)
     try {
       await CourseModel.SoftdeleteCourse(course_id,usid);
   
@@ -81,6 +81,18 @@ async function GetCourses (req, res) {
 }
 //______________________________________________________________________________________________
 
+
+async function GetCourseById (req, res) {
+  try {
+    const id = req.params.id;
+    const courses = await CourseModel.GetCourseById(id);
+    res.status(200).json(courses);
+  } catch (error) {
+    console.error("Failed to get course in the controller: ", error);
+    res.status(500).json({ error: "Failed to get course" });
+  }
+}
+//______________________________________________________________________________________________
 async function GetCoursedeleted(req, res) {
   try {
     const deletedCourses = await CourseModel.GetCoursedeleted();
@@ -101,5 +113,6 @@ async function GetCoursedeleted(req, res) {
     SoftdeleteCourse,
     RestoreCourse,
     GetCourses,
-    GetCoursedeleted
+    GetCoursedeleted,
+    GetCourseById
   };

@@ -1,79 +1,84 @@
 import { IconButton } from "@material-ui/core";
-import { SendOutlined } from "@material-ui/icons";
+import { Flag, SendOutlined } from "@material-ui/icons";
 // import moment from "moment";
-import { useState ,useEffect} from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useState, useEffect, useLayoutEffect } from "react";
+import { useParams } from "react-router-dom";
 import Announcement from "../components/Announcement";
 import classCss from "../styleSheets/Class.module.css";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCoursesForUser } from "../ReduxSlice/courseUserSlice";
+import { fetchCourseById } from "../ReduxSlice/courseUserSlice";
+import { getAllPostsOnCourse } from "../ReduxSlice/postOnCourseSlice";
+
 function Class() {
-  const [classData, setClassData] = useState({});
+  //to get data from redux store
+  const [data, setData] = useState("");
+
+  // get data from store
+  let classData = useSelector((state) => state.courseUser.userCourses);
+  // console.log(classData)
+
+  const dispatch = useDispatch();
   const [announcementContent, setAnnouncementContent] = useState("");
-  const [posts, setPosts] = useState([]);
-  
-//   const { id } = useParams();
-//   useEffect(() => {
-//     // reverse the array
-//     let reversedArray = classData?.posts?.reverse();
-//     setPosts(reversedArray);
-//   }, [classData]);
+  // console.log(classData)
+  const [flag, setFlag] = useState(false);
+  const { id } = useParams();
+  // get posts from store 
+  const posts = useSelector((state)=>state.postOnCourse.allPostsOnCourse)
+  console.log(posts)
+  useEffect(() => {
+    if (!id) {
+      dispatch(fetchCoursesForUser());
+    } else {
+      dispatch(fetchCourseById(id));
+      dispatch(getAllPostsOnCourse(id));
+      setFlag(true);
+    }
+    setData(classData);
+
+    if (data.course_name == "" || flag == true)
+      setTimeout(() => {
+        setFlag(false);
+      }, 1000);
+  }, [dispatch]);
+
   const createPost = async () => {
-    // try {
-    //   const myClassRef = await db.collection("classes").doc(id).get();
-    //   const myClassData = await myClassRef.data();
-    //   console.log(myClassData);
-    //   let tempPosts = myClassData.posts;
-    //   tempPosts.push({
-    //     authorId: user.uid,
-    //     content: announcementContent,
-    //     date: moment().format("MMM Do YY"),
-    //     image: user.photoURL,
-    //     name: user.displayName,
-    //   });
-
-
-    //   myClassRef.ref.update({
-    //     posts: tempPosts,
-    //   });
-    // } catch (error) {
-    //   console.error(error);
-    //   alert(`There was an error posting the announcement, please try again!`);
-    // }
   };
 
-//   useEffect(() => {
-
-//   }, []);
-//   useEffect(() => {
-//     if (loading) return;
-//     if (!user) history.replace("/");
-//   }, [loading, user]);
-return (
-    <div className={classCss.class}>
-      <div className={classCss.class__nameBox}>
-        <div className={classCss.class__name}>{classData.name || "osama" }</div>
+  return (
+    <>
+      <div className={classCss.class}>
+        {data && (
+          <div className={classCss.class__nameBox} key={data.course_id}>
+            <div className={classCss.class__name}>{data.course_name}</div>
+            <p className="text-sm p-8">{data.course_description}</p>
+          </div>
+        )}
+        <div className={classCss.class__announce}>
+          <img src="" alt="My image" />
+          <input
+            type="text"
+            value={announcementContent}
+            onChange={(e) => setAnnouncementContent(e.target.value)}
+            placeholder="Announce something to your class"
+          />
+          <IconButton onClick={createPost}>
+            <SendOutlined />
+          </IconButton>
+        </div>
+        {posts?.map((post) => (
+          <Announcement
+            authorId={post.first_name
+            }
+            content={post.description}
+            date={post.date}
+            image={post.image}
+            name={post.last_name
+            }
+          />
+        ))}
       </div>
-      <div className={classCss.class__announce}>
-        <img src="" alt="My image" />
-        <input
-          type="text"
-          value={announcementContent}
-          onChange={(e) => setAnnouncementContent(e.target.value)}
-          placeholder="Announce something to your class"
-        />
-        <IconButton onClick={createPost}>
-          <SendOutlined />
-        </IconButton>
-      </div>
-      {posts?.map((post) => (
-        <Announcement
-          authorId={post.authorId}
-          content={post.content}
-          date={post.date}
-          image={post.image}
-          name={post.name}
-        />
-      ))}
-    </div>
+    </>
   );
 }
 export default Class;

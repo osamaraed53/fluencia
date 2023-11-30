@@ -29,7 +29,8 @@ import Test from "./components/Test";
 import People from "./components/People";
 import Contact from "./components/Contact";
 import FAQs from "./components/FAQs";
-
+import About from "./components/About";
+import Subscription from './components/Subscription'
 
 function App() {
   const [signIn, setSignin] = useState(false);
@@ -60,10 +61,12 @@ function App() {
           <Routes>
             {/*  main routs */}
             <Route path="/" element={<Landing />} />
+            <Route path="/Subscription" element={<Subscription/>} />
             <Route path="/signUp" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
             <Route path="*" element={<NotFound />} />
             <Route path="/contact" element={<Contact/>}/>
+            <Route path="/about" element={<About/>}/>
             <Route path="/faqs" element={<FAQs/>} />
             <Route path="/adminSignIn" element={<LoginForAdmin/>} />
             {/* <Route path="/main/addNewCourse" element={<AddNewCourse/>} /> */}

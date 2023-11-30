@@ -16,10 +16,7 @@ const ActiveCourses = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 3; // Adjust as needed
     
-  
-  
-  
-  
+
     //methode to get data from store  
     const [flag , setFlag] = useState(false)
     const dispatch = useDispatch()
@@ -30,7 +27,6 @@ const ActiveCourses = () => {
     useEffect(() => {
       dispatch(fetchActiveCourses()); 
     }, [dispatch,flag]);
-  
   
   // for pagination 
   const canClickNext = useRef(3)

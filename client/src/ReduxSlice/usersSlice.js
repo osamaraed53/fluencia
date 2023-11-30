@@ -7,6 +7,7 @@ export const fetchUsers = () => async (dispatch) => {
   try {
     const response = await axios.get("http://localhost:3000/GetUsers");
     const users = response.data;
+    console.log(users)
     dispatch(setUsers(users));
     dispatch(clearUserError());
   } catch (error) {

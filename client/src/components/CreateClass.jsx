@@ -33,8 +33,8 @@ function AddNewCourse({ isOpenAddNewClass, setOpenAddNewClass }) {
 
   const createClass = async (e) => {
     e.preventDefault();
-    console.log(formData)
     dispatch(addCourse(formData));
+    handleClose()
   };
 
   return (

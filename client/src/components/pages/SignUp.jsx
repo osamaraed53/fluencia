@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 const SignUp = () => {
   const dispatch = useDispatch();
-  // const Autherror = useSelector((state) => state.auth.error);
   const Autherror = useSelector((state) => state.auth.error);
 
   // State to store form data

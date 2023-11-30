@@ -1,115 +1,121 @@
 const db = require("../models/db");
 
-const addCourse = async (
-  course_name,
-  course_description,
-  start_date,
-  price,
-  admin_id
-) => {
-  const queryText = `
-      INSERT INTO courses (admin_id, course_name, course_description, start_date,price)
-      VALUES ($1, $2, $3, $4, $5)
+
+const addCourse = async (course_name, course_description, start_date, admin_id) => {
+  console.log( admin_id , 111111111111111111111111111111);
+    const queryText = `
+      INSERT INTO courses (admin_id, course_name, course_description, start_date)
+      VALUES ($1, $2, $3, $4)
       RETURNING course_id;
     `;
-
-  const values = [admin_id, course_name, course_description, start_date, price];
-
-  try {
-    const result = await db.query(queryText, values);
-    return result.rows[0].course_id;
-  } catch (error) {
-    console.error("Failed to add course in the model: ", error);
-    throw new Error("Failed to add course in the model");
-  }
-};
-
+  
+    const values = [admin_id, course_name, course_description, start_date];
+  
+    try {
+      const result = await db.query(queryText, values);
+      return result.rows[0].course_id;
+    } catch (error) {
+      console.error("Failed to add course in the model: ", error);
+      throw new Error("Failed to add course in the model");
+    }
+  };
+  
 //___________________________________________________________________________________________
 
-const UpdateCourse = async (
-  course_id,
-  course_name,
-  course_description,
-  start_date,
-  admin_id
-) => {
-  const queryText = `
+
+  const UpdateCourse = async (course_id, course_name, course_description, start_date,admin_id) => {
+    const queryText = `
       UPDATE courses
       SET course_name = $1, course_description = $2, start_date = $3
       WHERE course_id = $4 AND admin_id=$5;
     `;
-
-  const values = [
-    course_name,
-    course_description,
-    start_date,
-    course_id,
-    admin_id,
-  ];
-
-  try {
-    await db.query(queryText, values);
-  } catch (error) {
-    console.error("Failed to update course in the model: ", error);
-    throw new Error("Failed to update course in the model");
-  }
-};
+  
+    const values = [course_name, course_description, start_date, course_id,admin_id];
+  
+    try {
+      await db.query(queryText, values);
+    } catch (error) {
+      console.error("Failed to update course in the model: ", error);
+      throw new Error("Failed to update course in the model");
+    }
+  };
 
 //______________________________________________________________________________________________
 
-const SoftdeleteCourse = async (course_id, admin_id) => {
-  console.log("Model",course_id)
-  
-  const queryText = `
+  const SoftdeleteCourse = async (course_id) => {
+    const queryText = `
       UPDATE courses
       SET hidden = TRUE
-      WHERE course_id = $1 ;
+      WHERE course_id = $1;
     `;
-
-  const values = [course_id];
-
-  try {
-    await db.query(queryText, values);
-  } catch (error) {
-    console.error("Failed to soft delete course in the model: ", error);
-    throw new Error("Failed to soft delete course in the model");
-  }
-};
+  
+    const values = [course_id];
+  
+    try {
+      await db.query(queryText, values);
+    } catch (error) {
+      console.error("Failed to soft delete course in the model: ", error);
+      throw new Error("Failed to soft delete course in the model");
+    }
+  };
 
 //______________________________________________________________________________________________
 
-const RestoreCourse = async (course_id) => {
-  const queryText = `
+  const RestoreCourse = async (course_id) => {
+    const queryText = `
       UPDATE courses
       SET hidden = FALSE
       WHERE course_id = $1;
     `;
-
-  const values = [course_id];
-
-  try {
-    await db.query(queryText, values);
-  } catch (error) {
-    console.error("Failed to restore course in the model: ", error);
-    throw new Error("Failed to restore course in the model");
-  }
-};
+  
+    const values = [course_id];
+  
+    try {
+      await db.query(queryText, values);
+    } catch (error) {
+      console.error("Failed to restore course in the model: ", error);
+      throw new Error("Failed to restore course in the model");
+    }
+  };
 //______________________________________________________________________________________________
 
 const GetCourses = async () => {
-  const queryText = `
+    const queryText = `
       SELECT *
       FROM courses
       WHERE hidden = FALSE;
     `;
-  // const queryText = "SELECT course_name, course_description, TO_CHAR(start_date, 'YYYY-MM-DD') AS formatted_start_date FROM courses WHERE hidden=false";
+// const queryText = "SELECT course_name, course_description, TO_CHAR(start_date, 'YYYY-MM-DD') AS formatted_start_date FROM courses WHERE hidden=false";
+    
+try {
+      const result = await db.query(queryText);
+      return result.rows;
+    } catch (error) {
+      console.error("Failed to get courses in the model: ", error);
+      throw new Error("Failed to get courses in the model");
+    }
+  };
 
-  try {
-    const result = await db.query(queryText);
-    return result.rows;
+//______________________________________________________________________________________________
+
+
+const GetCourseById = async (id) => {
+
+  const queryText = `
+    SELECT *
+    FROM courses
+    WHERE course_id = $1;
+  `;
+  const values = [id]
+  // console.log(id)
+// const queryText = "SELECT course_name, course_description, TO_CHAR(start_date, 'YYYY-MM-DD') AS formatted_start_date FROM courses WHERE hidden=false";
+  
+try {
+    const result = await db.query(queryText,values);
+    return result.rows[0];
   } catch (error) {
-    console.error("Failed to get courses in the model: ", error);
-    throw new Error("Failed to get courses in the model");
+    console.error("Failed to get course in the model: ", error);
+    throw new Error("Failed to get course in the model");
   }
 };
 
@@ -131,13 +137,16 @@ const GetCoursedeleted = async () => {
   }
 };
 
+
+
 //___________________________________
 
-module.exports = {
-  addCourse,
-  UpdateCourse,
-  SoftdeleteCourse,
-  RestoreCourse,
-  GetCourses,
-  GetCoursedeleted,
-};
+  module.exports = {
+    addCourse,
+    UpdateCourse,
+    SoftdeleteCourse,
+    RestoreCourse,
+    GetCourses,
+    GetCoursedeleted,
+    GetCourseById
+  };

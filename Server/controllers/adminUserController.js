@@ -69,8 +69,8 @@ const subadminCreate = async (req, res) => {
       if (!user) {
         return res.status(401).json({ message: 'Invalid email' });
       }
-    //  const storedHashedPassword = hashedPassword;
-      const passwordMatch = await bcrypt.compare(password, user.password);
+     const storedHashedPassword = user.password;
+      const passwordMatch = await bcrypt.compare(password, storedHashedPassword);
       if (!passwordMatch) {
         res.status(400).json({ message: "Email or password is invalid" });
         return;
@@ -80,7 +80,9 @@ const subadminCreate = async (req, res) => {
       const payload = {
          user_id: user.admin_id,
         email: user.email,
+        role:user.role
       };
+      
   
       const secretKey = process.env.SECRET_KEY;
       const token = jwt.sign(payload, secretKey, { expiresIn: '7d' });
@@ -89,10 +91,10 @@ const subadminCreate = async (req, res) => {
       res.status(200).json({
         message: 'Admin signed in successfully',
         token: token,
-        Admin_id: user.user_id,
+        // Admin_id: user.admin_id,
       });
       console.log(token);
-      console.log(`Admin_id : ${user.user_id}`);
+      console.log(`Admin_id : ${user.admin_id}`);
     } catch (error) {
       console.error('Error logging in:', error);
       res.status(500).json({ message: 'Internal server error' });
@@ -107,6 +109,7 @@ const SoftdeleteUser = async (req, res) => {
       const queryText = "UPDATE users SET deleted = TRUE WHERE user_id = $1";
       const values = [user_id];
       const result = await db.query(queryText, values);
+  
       res.status(200).json({ message: "User deleted successfully" });
     } catch (error) {
       console.error(error);
@@ -195,26 +198,22 @@ async function GetUsers (req, res) {
 
   async function addCoursetoUser(req, res) {
     try {
-      // const admin_id = req.params.admin_id;
       const usid = req.user.user_id;
-
       const user_id = req.params.user_id;
       const course_id = req.params.course_id;
       const { notes } = req.body;
   
-      const checkUserCourse = await db.query('SELECT * FROM courses_user WHERE user_id = $1 AND course_id = $2 AND admin_id=$3', [user_id, course_id,usid]);
+      const result = await adminUserModel.addCoursetoUser(user_id, course_id, usid, notes);
   
-      if (checkUserCourse.rows.length > 0) {
-        res.status(400).json({ message: 'The user is already in this course' });
+      if (result.error) {
+        res.status(400).json(result);
       } else {
-        const result = await db.query('INSERT INTO courses_user(course_id, user_id, admin_id, notes) VALUES($1, $2, $3, $4) RETURNING course_user_id', [course_id, user_id, usid, notes]);
-        const addedCourseId = result.rows[0].course_user_id;
-        res.status(200).json({ message: 'The course has been added to the user successfully', addedCourseId });
+        res.status(200).json(result);
       }
-    }catch (error) {
-          console.error('An error occurred while adding the course for the user', error);
-          res.status(500).json({ error: 'An error occurred while adding the course for the user'});
-        }
+    } catch (error) {
+      console.error('An error occurred while adding the course for the user', error);
+      res.status(500).json({ error: 'An error occurred while adding the course for the user' });
+    }
   }
   
   //__________________________________________________________________________
@@ -223,10 +222,10 @@ async function GetUsers (req, res) {
     try {
       const course_user_id = req.params.course_user_id; 
       const { notes } = req.body;
+    
+      const result = await adminUserModel.updateCoursetoUser(course_user_id, notes);
   
-      await db.query('UPDATE courses_user SET notes = $1 WHERE course_user_id = $2', [notes, course_user_id]);
-  
-      res.status(200).json({ message: 'Updated successfully' });
+      res.status(200).json(result);
     } catch (error) {
       console.error('An error occurred while updating', error);
       res.status(500).json({ error: 'An error occurred while updating' });
@@ -235,76 +234,63 @@ async function GetUsers (req, res) {
 
 //__________________________________________________________________________
 
-  async function deleteCourseForUser(req, res) {
-    try {
-      const course_user_id = req.params.course_user_id; // تفاعل مع معرّف السجل الذي تريد حذفه
+async function deleteCourseForUser(req, res) {
+  try {
+    const course_user_id = req.params.course_user_id;
   
-      // حذف السجل من جدول courses_user باستخدام course_user_id
-      await db.query('UPDATE courses_user SET deleted = TRUE WHERE course_user_id = $1', [course_user_id]);
-  
-      res.status(200).json({ message: 'Deleted successfully' });
-    } catch (error) {
-      console.error('An error occurred while deleting', error);
-      res.status(500).json({ error: 'An error occurred while deleting' });
-    }
+    const result = await adminUserModel.deleteCourseForUser(course_user_id);
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('An error occurred while deleting', error);
+    res.status(500).json({ error: 'An error occurred while deleting' });
   }
+}
 
 //__________________________________________________________________________
 
-  async function restoreCourseForUser(req, res) {
-    try {
-      const course_user_id = req.params.course_user_id; 
+async function restoreCourseForUser(req, res) {
+  try {
+    const course_user_id = req.params.course_user_id;
   
-      await db.query('UPDATE courses_user SET deleted = FALSE WHERE course_user_id = $1', [course_user_id]);
-  
-      res.status(200).json({ message: 'Restored successfully' });
-    } catch (error) {
-      console.error('An error occurred while restoring', error);
-      res.status(500).json({ error: 'An error occurred while restoring' });
-    }
+    const result = await adminUserModel.restoreCourseForUser(course_user_id);
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('An error occurred while restoring', error);
+    res.status(500).json({ error: 'An error occurred while restoring' });
   }
+}
 
 //__________________________________________________________________________
 
 
-  async function getCoursesForUser(req, res) {
-    try {
-      const user_id = req.params.user_id;
-  
-      const result = await db.query(`
-        SELECT courses.course_id, courses.course_name,courses_user.notes
-        FROM courses_user 
-        JOIN courses  ON courses_user.course_id = courses.course_id
-        WHERE courses_user.user_id = $1
-      `, [user_id]);
-  
-      const userCourses = result.rows;
-      
-      res.status(200).json({ userCourses });
-    } catch (error) {
-      console.error('An error occurred while obtaining courses', error);
-      res.status(500).json({ error: 'An error occurred while obtaining courses' });
-    }
+async function getCoursesForUser(req, res) {
+  try {
+    const user_id = req.params.user_id;
+
+    const userCourses = await adminUserModel.getCoursesForUser(user_id);
+
+    res.status(200).json({ userCourses });
+  } catch (error) {
+    console.error('An error occurred while obtaining courses', error);
+    res.status(500).json({ error: 'An error occurred while obtaining courses' });
   }
+}
 
 //_________________________________________________________________________________________
 
 
 async function addTasktoUser(req, res) {
   try {
-    console.log("sdfghjkl;'")
-    const admin_id = req.params.admin_id;
+    const admin_id = req.user.user_id;
     const user_id = req.params.user_id;
     const task_id = req.params.task_id;
-    
+    const { start_date, end_date, notes } = req.body;
 
-    const {  start_date, end_date,notes } = req.body;
+    const result = await adminUserModel.addTasktoUser(user_id, task_id, start_date, end_date, admin_id, notes);
 
-    const result = await db.query('INSERT INTO users_task(user_id, task_id, start_date, end_date, admin_id, notes) VALUES($1, $2, $3, $4, $5, $6) RETURNING users_task_id',
-     [user_id, task_id, start_date, end_date, admin_id, notes]);
-
-    const addedTaskId = result.rows[0].users_task_id;
-    res.status(200).json({ message: 'The task has been added to the user successfully', addedTaskId });
+    res.status(200).json(result);
   } catch (error) {
     console.error('An error occurred while adding the task for the user', error);
     res.status(500).json({ error: 'An error occurred while adding the task for the user' });
@@ -312,20 +298,19 @@ async function addTasktoUser(req, res) {
 }
 
 //____________________________________________________________________________________________
-
 async function updateTaskForUser(req, res) {
   try {
-    const users_task_id = req.params.users_task_id;
+    const usersTaskId = req.params.users_task_id;
     const { start_date, end_date, notes } = req.body;
 
-    await db.query('UPDATE users_task SET start_date = $1, end_date = $2, notes = $3 WHERE users_task_id = $4',
-      [start_date, end_date, notes, users_task_id]);
-      res.status(200).json({ message: 'updated successfully' });
-    } catch (error) {
-      console.error('An error occurred while updating', error);
-      res.status(500).json({ error: 'An error occurred while updating' });
-    }
+    const result = await adminUserModel.updateTaskForUser(usersTaskId, start_date, end_date, notes);
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('An error occurred while updating', error);
+    res.status(500).json({ error: 'An error occurred while updating' });
   }
+}
 
 
   //________________________________________________________________________________________________
@@ -334,8 +319,9 @@ async function updateTaskForUser(req, res) {
     try {
       const users_task_id = req.params.users_task_id;
   
-      await db.query('UPDATE users_task SET deleted =TRUE WHERE users_task_id = $1', [users_task_id]);
-      res.status(200).json({ message: 'Deleted successfully' });
+      const result = await adminUserModel.deleteTaskForUser(users_task_id);
+  
+      res.status(200).json(result);
     } catch (error) {
       console.error('An error occurred while deleting', error);
       res.status(500).json({ error: 'An error occurred while deleting' });
@@ -348,9 +334,9 @@ async function updateTaskForUser(req, res) {
     try {
       const users_task_id = req.params.users_task_id;
   
-      await db.query('UPDATE users_task SET deleted = FALSE WHERE users_task_id = $1', [users_task_id]);
+      const result = await adminUserModel.restoreTaskForUser(users_task_id);
   
-      res.status(200).json({ message: 'Restored successfully' });
+      res.status(200).json(result);
     } catch (error) {
       console.error('An error occurred while restoring', error);
       res.status(500).json({ error: 'An error occurred while restoring' });
@@ -362,26 +348,74 @@ async function updateTaskForUser(req, res) {
 
   async function getTaskDetails(req, res) {
     try {
-      const users_task_id = req.params.users_task_id;
+      // Check if the user is an admin
+      const isAdmin = req.user.role === 1 || req.user.role === 2;
   
-      // استرجاع السجل من جدول users_task مع بيانات من جدولي users و task
-      const result = await db.query(`
-        SELECT users.first_name, task.task_description, task.task_url, users_task.start_date, users_task.end_date
-        FROM users_task 
-        JOIN users  ON users_task.user_id = users.user_id
-        JOIN task  ON users_task.task_id = task.task_id
-        WHERE users_task.users_task_id = $1
-      `, [users_task_id]);
+      // If not an admin, return an unauthorized error
+      if (!isAdmin) {
+        return res.status(403).json({ error: 'Unauthorized access' });
+      }
   
-      const taskDetails = result.rows[0];
+      const usersTaskId = req.params.users_task_id;
+  
+      const taskDetails = await adminUserModel.getTaskDetails(usersTaskId);
   
       res.status(200).json({ taskDetails });
     } catch (error) {
-      console.error('حدث خطأ أثناء استرجاع تفاصيل المهمة:', error);
-      res.status(500).json({ error: 'حدث خطأ أثناء استرجاع تفاصيل المهمة' });
+      console.error('An error occurred while retrieving details', error);
+      res.status(500).json({ error: 'An error occurred while retrieving details' });
     }
   }
+
   
+//______________________________________________________________________________________
+
+const SearchUsers = async (req, res) => {
+  try {
+    let { email } = req.body;
+
+   
+
+    if (!email) {                   //trim >>>  عشان يتأكد اذا كان في فراغات او مسافات بالايميل عشان يتجاهلهم
+      const allUsers = await adminUserModel.getAllUsers();  // When the email value is empty .... all emails will appear
+      return res.status(200).json(allUsers.rows);
+    }
+    email = email.toLowerCase().trim();
+    const searchResult = await adminUserModel.searchUsersByEmail(email);
+
+    res.status(200).json(searchResult.rows);
+  } catch (error) {
+    console.error('An error occurred while searching for users:', error);
+    res.status(500).json({ error: 'An error occurred while searching for users' });
+  }
+};
+
+//______________________________________________________________________________________
+
+
+const SearchTeachers = async (req, res) => {
+  try {
+    let { email } = req.body;
+    if (!email) {       
+      const allTeachers = await adminUserModel.getAllTeachers()
+      return res.status(200).json(allTeachers.rows);
+    }
+    email = email.toLowerCase().trim();
+
+    const searchResult = await adminUserModel.searchTeacherByEmail(email);
+
+    res.status(200).json(searchResult.rows);
+  } catch (error) {
+    console.error('An error occurred while searching for Teachers', error);
+    res.status(500).json({ error: 'An error occurred while searching for Teachers' });
+  }
+};
+
+
+
+//______________________________________________________________________________________
+
+
 
   module.exports = {
     subadminCreate,
@@ -408,6 +442,8 @@ async function updateTaskForUser(req, res) {
     updateTaskForUser,
     deleteTaskForUser,
     restoreTaskForUser,
-    getTaskDetails
+    getTaskDetails,
+    SearchUsers,
+    SearchTeachers
   };
   

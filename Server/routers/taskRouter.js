@@ -3,11 +3,11 @@ const taskController = require("../controllers/taskController");
 const router = express.Router();
 const authorize= require('../middlewares/authorization')
 
-router.post("/addTask",authorize.authorize,taskController.addTask);//
-router.put("/UpdateTask/:task_id",authorize.authorize,taskController.UpdateTask);//
-router.delete("/SoftdeleteTask/:task_id",authorize.authorize,taskController.SoftdeleteTask);//
-router.put("/RestoreTask/:task_id",authorize.authorize,taskController.RestoreTask);//
-router.get("/GetTaskes",taskController.GetTaskes);//
+router.post("/addTask",authorize.authorize,taskController.addTask);
+router.put("/UpdateTask/:task_id",authorize.authorize,taskController.UpdateTask);
+router.delete("/SoftdeleteTask/:task_id",authorize.authorize,taskController.SoftdeleteTask);
+router.put("/RestoreTask/:task_id",authorize.authorize,taskController.RestoreTask);
+router.get("/GetTaskes",taskController.GetTaskes);
 
 
 //  router.post("/addTasktoUser/:admin_id/:user_id/:task_id ",taskController.addTasktoUser );

@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 // import Header from "../Components/Header";
 // import Footer from "../Components/Footer";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
-import CheckoutForm from './CheckoutForm';
-import "../styleSheets/style.css";
+import CheckoutForm from "./CheckoutForm";
+import "../../styleSheets/style.css";
 // import "./styles.css";
 // import CheckoutForm from "./CheckoutForm";
 
 function Subscription() {
+  const { plan_id } = useParams();
+  const plans = [
+    { plan_id: 1, plan_price: "170", duration: "Month" },
+    { plan_id: 2, plan_price: "280", duration: "2 Month" },
+    { plan_id: 3, plan_price: "430", duration: "3 Month" },
+  ];
+
   useEffect(() => {
     window.scrollTo(0, 0);
     <></>;
@@ -38,17 +45,19 @@ function Subscription() {
           <div className="flex flex-col  pb-4">
             <div className="flex flex-row justify-between items-center border-b border-solid  bg-[#F7F1EE]">
               <div className="font-bold">Premium Membership</div>
-              <div className="font-bold">$70.00</div>
+              <div className="font-bold">{plans[(plan_id-1)].plan_price}</div>
             </div>
 
             <div className="flex flex-col justify-between  items-center pt-4 w-full">
               <div className="flex flex-row justify-between w-full items-center pt-4">
-                <span className="font-bold">Start 1 Month</span>
+                <span className="font-bold">
+                  {plans[(plan_id-1)].duration}
+                </span>
                 <span className="font-bold">Today</span>
               </div>
               <div className="flex flex-row justify-between w-full items-center pt-4">
                 <span className="font-bold">Start billing date</span>
-                <span className="font-bold">20/11/2023</span>
+                <span className="font-bold">1/1/2024</span>
               </div>
             </div>
           </div>

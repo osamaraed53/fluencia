@@ -1,17 +1,20 @@
 import React, { useState } from "react";
-import Tabs from "../Tabs";
-import Class from "../Class";
-import Members from "../Members";
+import Tabs from "../ClassPage/Tabs";
+import Class from "../ClassPage/Class";
+import Members from "../ClassPage/Members";
 import {
   Route,
   Routes,
 } from "react-router-dom";
 import Tasks from "../Tasks";
 import Filter from "./Filter";
-import People from "../People";
+import People from "../ClassPage/People";
+import PrivateRoute from '../../PrivateRoute'
+import {  useNavigate ,Navigate} from "react-router-dom";
 
 const HomeForUser = () => {
   // to make Taps component have reusable
+ const type =  PrivateRoute()
   const tabs = [
     { id: "1", title: "Class", path: "class" },
     { id: "2", title: "Tasks", path: "tasks" },
@@ -21,23 +24,27 @@ const HomeForUser = () => {
 
   return (
     <>
-      {/*  to make Taps component have reusable  */}
-      <Tabs tabs={tabs} active={activeTabe} setActive={setActiveTabe} />
-      {/* routes for Tabs*/}
-      <Routes>
-        <Route path="class" element={<Class />} />
-        <Route
-          path="tasks"
-          element={
-            <div className="flex flex-col justify-center mt-4 mb-44 ">
-              <Filter/>
-              <Tasks />{" "}
+
+        <Tabs tabs={tabs} active={activeTabe} setActive={setActiveTabe} />
+
+        {/* Routes for Tabs */}
+        <Routes>
+          <Route path="class" element={<Class />} />
+          <Route
+            path="tasks"
+            element={
+              <div className="flex flex-col justify-center mt-4 mb-44 ">
+                <Filter />
+                <Tasks />{" "}
               </div>
-          }
-        />
-        <Route path="people" element={<People/>} />
-        <Route index element={<Class />} />
-      </Routes>
+            }
+          />
+          <Route path="people" element={<People />} />
+          <Route index element={<Class />} />
+        </Routes>
+      {/* </PrivateRoute> */}
+      {(type =="none") &&<Navigate to="/" replace />}
+
     </>
   );
 };

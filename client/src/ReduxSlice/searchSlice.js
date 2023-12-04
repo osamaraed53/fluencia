@@ -21,7 +21,6 @@ export const searchTeachers = (input) => async (dispatch) => {
       { headers }
     );
     const teachers = response.data;
-    // console.log(teachers);
     dispatch(setTeachers(teachers));
     dispatch(clearSearchError());
   } catch (error) {
@@ -38,7 +37,6 @@ export const searchUsers = (input) => async (dispatch) => {
       { headers }
     );
     const users = response.data;
-    // console.log(users);
     dispatch(setUsers(users));
     dispatch(clearSearchError());
   } catch (error) {

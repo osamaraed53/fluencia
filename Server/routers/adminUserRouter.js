@@ -10,7 +10,7 @@ router.post("/loginAdmin",adminController.loginAdmin );
 router.delete("/SoftdeleteUser/:id",authorize.authorize,adminController.SoftdeleteUser );
 router.put("/RestoreUser/:id",authorize.authorize,adminController.RestoreUser );
 
-router.get("/GetUsers/",authorize.authorize,adminController.GetUsers );
+router.get("/GetUsers",authorize.authorize,adminController.GetUsers );
 router.get("/getUserById/:id",authorize.authorize,adminController.getUserById );
 router.get("/GetDeletedUsers",authorize.authorize,adminController.GetDeletedUsers );
 

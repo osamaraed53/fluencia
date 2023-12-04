@@ -1,29 +1,32 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addCourseToUser } from "../ReduxSlice/courseUserSlice";
+import { addCourseToUser } from "../../ReduxSlice/courseUserSlice";
 import { useParams } from "react-router-dom";
 
-const SearchCard = ({ type }) => {
+const SearchCard = ({ type_of_members, flag, setFlag }) => {
   // get course_id from params
-  const { id } = useParams();
+  const { course_id } = useParams();
 
   // get data of teachers or student from store
   const users = useSelector((state) => state.search.users);
   const teachers = useSelector((state) => state.search.teachers);
-  let members = (users && type == "student" && users) || teachers;
-  console.log("members", members);
+  let members = (users && type_of_members == "student" && users) || teachers;
+ 
+ 
+  // console.log("members", members);
   // console.log(users)
   // console.log(teachers)
+
+
 
   // handel add new student or teachers to class
   const dispatch = useDispatch();
 
   const handeToAddStudentOrAdminToClass = (member) => {
-    if (type == "student") {
+    if (type_of_members == "student") {
       const user_id = member.user_id;
-      console.log(user_id)
-      const course_id = id;
       dispatch(addCourseToUser(user_id, course_id));
+      setFlag(!flag)
     }
   };
 

@@ -144,10 +144,10 @@ async function GetUsers (req, res) {
     // const { email, password } = req.body;
   
     try {
-      const checkQuery = "SELECT first_name,last_name,email FROM users WHERE deleted=false";
+      const checkQuery = "SELECT user_id,first_name,last_name,email,is_pay FROM users WHERE deleted=false";
        const Result = await db.query(checkQuery);
   
-       
+      //  console.log(Result.rows)
         res.status(200).json(Result.rows);
       
     } catch (error) {

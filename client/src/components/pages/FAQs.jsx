@@ -1,6 +1,11 @@
-import React from "react";
+import React,{useEffect} from 'react'
 
 const FAQs = () => {
+
+  useEffect(()=>{
+    window.scrollTo(0, 0);
+
+  },[])
   return (
     <div className="mb-10">
       <div class="max-w-screen-xl mx-auto px-5 bg-white min-h-sceen">

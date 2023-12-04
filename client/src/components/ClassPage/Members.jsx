@@ -1,17 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Search from "./Search";
 import { useDispatch } from "react-redux";
-import {deleteCourseForUser} from '../ReduxSlice/courseUserSlice'
-const Members = ({ title ,type ,data = []}) => {
+import {deleteCourseForUser} from '../../ReduxSlice/courseUserSlice'
+import PrivateRoute from '../../PrivateRoute'
+const Members = ({ title ,type_of_members ,data = [] ,flag, setFlag}) => {
+  PrivateRoute()
   const [isOpenSearch, setOpenSearch] = React.useState(false);
   const dispatch = useDispatch()
-
-  const handeToAddStudentOrAdminToClass = (member)=>{
-    if(type == "student"){
+  const handeToRemoveStudentOrAdminToClass = (member)=>{
+    if(type_of_members == "student"){
       dispatch(deleteCourseForUser(member.course_user_id))
+      setFlag(!flag)
     }
   }
+
 
 
   return (
@@ -62,7 +65,7 @@ const Members = ({ title ,type ,data = []}) => {
                 </div>
               </div>
               <button
-              onClick={()=>{handeToAddStudentOrAdminToClass(member)}}
+              onClick={()=>{handeToRemoveStudentOrAdminToClass(member)}}
                 href="javascript:void(0)"
                 className="text-gray-700 text-sm border rounded-lg px-3 py-2 duration-150 bg-white hover:bg-red-600"
               >
@@ -74,7 +77,7 @@ const Members = ({ title ,type ,data = []}) => {
       </div>
       {isOpenSearch && createPortal(
         <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-opacity-80 bg-gray-900 z-50 ">
-          {<Search setOpenSearch={setOpenSearch}  type={type}  />}
+          {<Search setOpenSearch={setOpenSearch}  type_of_members={type_of_members}  flag={flag} setFlag={setFlag}   />}
         </div>,
         document.body
       )}

@@ -2,9 +2,16 @@ import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Cookies from 'js-cookie';
-
+import { useDispatch,useSelector } from "react-redux";
+import {GetCoursesIds } from './courseUserSlice'
 // import { useNavigate } from "react-router-dom";
+// to access in store 
 
+const token = Cookies.get("accessToken"); 
+const headers = {
+  'Authorization': `Bearer ${token}`,
+  "Content-Type": "multipart/form-data" 
+};
 
 
 //  authAction
@@ -16,15 +23,15 @@ export const login = (userData) => async (dispatch) => {
     const response = await axios.post("http://localhost:3000/login", userData);
     const user = response.data;
     // console.log("login axios in action", user)
-    dispatch(setLogin(user.user_id));
+    dispatch(setLogin(user.data));
     dispatch(clearError());
-    Cookies.set("accessToken",user.token)
-
+    Cookies.set("accessToken", user.token);
     setTimeout(() => {
-      window.location.href = '/home';
-    },  1000);
+      window.location.href = "/main";
+    }, 1000);
   } catch (error) {
     dispatch(setError("Invalid credentials. Please try again."));
+    console.log(error)
   }
 };
 
@@ -34,6 +41,7 @@ export const signUp = (userData) => async (dispatch) => {
     // Assuming your login endpoint is at /login
     const response = await axios.post("http://localhost:3000/signup", userData);
     const user = response.data;
+    
     dispatch(setSignUp(user));
     dispatch(clearError());
     // when sign-up is successful open
@@ -55,6 +63,28 @@ export const signUp = (userData) => async (dispatch) => {
   }
 };
 
+export const updatePicture = (formData) => async (dispatch) => {
+  try {
+    // Assuming your login endpoint is at /login
+    const response = await axios.put("http://localhost:3000/updatePicture", formData, {headers}
+    );
+    const user = response.data;
+    
+    dispatch(setPicture(user.picture));
+    dispatch(clearError());
+    // when sign-up is successful open
+    Swal.fire({
+      icon: "success",
+      title: "Update successful!",
+      showConfirmButton: false,
+      timer: 1000,
+    });
+
+  } catch (error) {
+    dispatch(setError("Invalid credentials. Please try again."));
+  }
+};
+
 
 // authSlice.
 const authSlice = createSlice({
@@ -68,7 +98,10 @@ const authSlice = createSlice({
     setSignUp: (state, action) => {},
     setLogin: (state, action) => {
       state.user = action.payload;
-      state.isAuthenticated = !!action.payload; // Set isAuthenticated based on whether user is truthy
+      state.isAuthenticated = !!action.payload;
+    },
+    setPicture: (state, action) => {
+      state.user.picture = action.payload;
     },
     setError: (state, action) => {
       state.error = action.payload;
@@ -84,6 +117,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { setSignUp, setLogin, setError, clearError, logout } =
+export const { setSignUp, setLogin, setError, clearError, logout ,setPicture} =
   authSlice.actions;
 export default authSlice.reducer;

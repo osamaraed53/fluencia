@@ -1,10 +1,16 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { signUp } from "../../ReduxSlice/AuthenticationSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const SignUp = () => {
   const dispatch = useDispatch();
   const Autherror = useSelector((state) => state.auth.error);
+  
+
+  useEffect(()=>{
+    window.scrollTo(0, 0);
+
+  },[])
 
   // State to store form data
   const [formData, setFormData] = useState({

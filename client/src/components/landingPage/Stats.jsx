@@ -1,7 +1,7 @@
 export default () => {
   const stats = [
     {
-      data: "35K",
+      data: "35",
       title: "Customers",
     },
     {
@@ -9,19 +9,19 @@ export default () => {
       title: "Countries",
     },
     {
-      data: "30M+",
+      data: "30+",
       title: "Total revenue",
     },
   ];
 
   return (
-    <section className="py-28 bg-gradient-to-b from-fluencia-purple to-white ">
+    <section className="py-28 bg-fluencia-purple  ">
       <div className="max-w-screen-xl mx-auto px-4 md:px-8">
         <div className="max-w-2xl mx-auto text-center">
           <h3 className="text-white  text-3xl font-semibold sm:text-4xl">
             Our customers are always happy
           </h3>
-          <p className="mt-3 text-fluencia-blue">
+          <p className="mt-3 text-white">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi
             venenatis sollicitudin quam ut tincidunt.
           </p>
@@ -31,12 +31,12 @@ export default () => {
             {stats.map((item, idx) => (
               <li
                 key={idx}
-                className="w-full h-full text-center  bg-fluencia-purple px-12 py-4 rounded-full sm:w-auto"
+                className="w-20 h-30 ext-center  bg-white shadow-sm shadow-white  px-12 py-4 rounded-lg sm:w-auto"
               >
-                <h4 className="text-4xl text-white  font-semibold">
+                <h4 className="text-4xl text-fluencia-dark-purple   font-semibold">
                   {item.data}
                 </h4>
-                <p className="mt-3 text-gray-400 font-medium">{item.title}</p>
+                <p className="mt-3 text-fluencia-dark-purple font-medium">{item.title}</p>
               </li>
             ))}
           </ul>

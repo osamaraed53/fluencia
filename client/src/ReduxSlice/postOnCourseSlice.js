@@ -11,10 +11,10 @@ const headers = {
 
 
 // Action to add a post on a course
-export const addPostOnCourse = (courseId,user_id, postData) => async (dispatch) => {
+export const addPostOnCourse = (course_Id, postData) => async (dispatch) => {
   try {
-    await axios.post(`http://localhost:3000/addPostOnCourse/${courseId}/${user_id}`, postData);
-    dispatch(addPostOnCourseSuccess({ courseId, postData }));
+    await axios.post(`http://localhost:3000/addPostOnCourse/${course_Id}`, postData,{headers});
+    dispatch(addPostOnCourseSuccess({ course_Id, postData }));
     dispatch(clearPostOnCourseError());
   } catch (error) {
     dispatch(setPostOnCourseError("Error adding post on course. Please try again."));
@@ -35,7 +35,7 @@ export const updatePostOnCourse = (postCourseId, updatedData) => async (dispatch
 // Action to delete a post on a course
 export const deletePostOnCourse = (postCourseId) => async (dispatch) => {
   try {
-    await axios.delete(`http://localhost:3000/deletePostOnCourse/${postCourseId}`);
+    await axios.delete(`http://localhost:3000/deletePostOnCourse/${postCourseId}`,{headers});
     dispatch(deletePostOnCourseSuccess(postCourseId));
     dispatch(clearPostOnCourseError());
   } catch (error) {
@@ -58,9 +58,8 @@ export const getPostsOnCourse = () => async (dispatch) => {
 // Action to fetch all posts on a specific course
 export const getAllPostsOnCourse = (courseId) => async (dispatch) => {
   try {
-    const response = await axios.get(`http://localhost:3000/getAllPostsOnCourse/${courseId}`,{},{headers});
+    const response = await axios.get(`http://localhost:3000/getAllPostsOnCourse/${courseId}`,{headers});
     const posts = response.data;
-    console.log(response.data)
     dispatch(setAllPostsOnCourse(posts));
     dispatch(clearPostOnCourseError());
   } catch (error) {

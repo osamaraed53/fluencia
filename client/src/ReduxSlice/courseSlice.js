@@ -2,6 +2,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import Cookies from "js-cookie";
+import Swal from "sweetalert2";
 
 // get token frm cookies to use in Authorization
 const token = Cookies.get("accessToken");
@@ -32,7 +33,7 @@ export const fetchHiddenCourses = () => async (dispatch) => {
     }); //
     const courses = response.data;
     dispatch(setHiddinCourses(courses));
-    console.log(courses)
+    // console.log(courses)
     dispatch(clearCourseError());
   } catch (error) {
     // I'm set data in  state but in s
@@ -49,9 +50,17 @@ export const addCourse = (courseData) => async (dispatch) => {
       { headers }
     ); //
     const newCourse = response.data; // Assuming the response contains the new course data
-    console.log(newCourse);
+    // console.log(newCourse);
     dispatch(addNewCourse(newCourse));
     dispatch(clearCourseError());
+    
+    Swal.fire({
+      icon: "success",
+      title: "Create class successful!",
+      showConfirmButton: false,
+      timer: 1000,
+    });
+
   } catch (error) {
     dispatch(setCourseError("Error adding a new course. Please try again."));
   }
@@ -103,6 +112,8 @@ export const restoreCourse = (courseId) => async (dispatch) => {
     dispatch(setCourseError("Error res toring the course. Please try again."));
   }
 };
+
+
 
 // courseSlice.js
 const courseSlice = createSlice({

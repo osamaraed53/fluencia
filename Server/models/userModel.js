@@ -29,10 +29,10 @@ const checkEmail = async (email) => {
 
 //__________________________________________________________________________________________
 
-const updateUser = async ( first_name, last_name, email, password,user_id) => {
+const updateUser = async ( first_name, last_name, email,user_id) => {
     const queryText =
-      "UPDATE users SET first_name = $2, last_name = $3, email = $4, password = $5 WHERE user_id = $1";
-    const values = [user_id, first_name, last_name, email, password];
+      "UPDATE users SET first_name = $2, last_name = $3, email = $4 WHERE user_id = $1";
+    const values = [user_id, first_name, last_name, email ];
     return db.query(queryText, values);
   };
 
@@ -51,7 +51,7 @@ const GetUserCourse = async (user_id) => {
 
   try {
     const result = await db.query(queryText, values);
-    return result.rows[0];
+    return result.rows;
   } catch (error) {
     console.error("Failed to get course for user in the model: ", error);
     throw new Error("Failed to get course for user in the model");
@@ -112,7 +112,7 @@ const GetUserCourse = async (user_id) => {
 
 const getAllPostsOnCourse = async (course_id) => {
   const queryText = `
-    SELECT users.first_name, users.last_name, post_on_course.description, post_on_course.url
+    SELECT post_on_course.post_course_id ,users.first_name, users.last_name,users.picture,users.email ,post_on_course.description, post_on_course.url
     FROM post_on_course 
     JOIN users ON post_on_course.user_id = users.user_id
     WHERE post_on_course.course_id = $1 AND post_on_course.deleted = false
@@ -190,6 +190,15 @@ async function getStudentsInCourse(course_id) {
 }
 
 
+const GetUserInformation = async (user_id) => {
+    
+  const result = await db.query('SELECT * FROM users WHERE user_id = $1 ', [
+    user_id,
+  ]);
+  return result.rows[0];
+};
+
+
 
 module.exports = {
   findByEmail,
@@ -203,5 +212,6 @@ module.exports = {
   getAllPostsOnCourse,
   GetUserCourse,
   getTaskDetails,
-  getCourseAdmin,getStudentsInCourse
+  getCourseAdmin,getStudentsInCourse,
+  GetUserInformation
 };

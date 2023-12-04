@@ -131,10 +131,16 @@ const login = async (req, res) => {
     res.status(200).json({
       message: 'User signed in successfully',
       token: token,
-      user_id: user.user_id,
+      data: {
+        first_name : user.first_name,
+        last_name :user.last_name,
+        picture :user.picture,
+        email : user.email,
+        is_pay : user.is_pay
+      },
     });
-    console.log(token);
-    console.log(user.user_id);
+    // console.log(token);
+    // console.log(user.user_id);
   } catch (error) {
     console.error('Error logging in:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -146,10 +152,12 @@ const login = async (req, res) => {
 
 const updateUser = async (req, res) => {
   // const user_id = req.params.id;
-  const { first_name, last_name, email, password } = req.body;
+  const usid = req.user.user_id;
+  const userInformation = await UserModel.GetUserInformation(usid)
+
+  const { first_name =userInformation.first_name, last_name=userInformation.first_name, email=userInformation.email } = req.body;
 
   try {
-    const usid = req.user.user_id;
 
     const schema = joi.object({
       first_name: joi.string().alphanum().min(3).max(20).required(),
@@ -158,29 +166,28 @@ const updateUser = async (req, res) => {
         .string()
         .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
         .required(),
-      password: joi
-        .string()
-        .pattern(
-          new RegExp(
-            "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d@$!%*?&^#]{6,30}$"
-          )
-        ),
+      // password: joi
+      //   .string()
+      //   .pattern(
+      //     new RegExp(
+      //       "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d@$!%*?&^#]{6,30}$"
+      //     )
+      //   ),
     });
 
     const { error } = schema.validate({
       first_name,
       last_name,
       email,
-      password,
     });
 
     if (error) {
       return res.status(400).json({ error: error.details });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
+    // const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
 
-    const result = await UserModel.updateUser( first_name, last_name, email, hashedPassword,usid);
+    const result = await UserModel.updateUser( first_name, last_name, email,usid);
 
     return res.status(200).json({ message: "User updated successfully" });
   } catch (error) {
@@ -203,10 +210,11 @@ async function updatePicture(req, res) {
       }
 
       const usid = req.user.user_id;
+      const imageBuffer = req.file.buffer ;
 
-      const imageBuffer = req.file ? req.file.buffer : null;
 
       const imageUrl = await uploadImageToFirebase(imageBuffer);
+      
       
 
       // if (!image || !image.filename) {
@@ -215,11 +223,12 @@ async function updatePicture(req, res) {
 
       // const answer_url = path.join('image', imageUrl);     //on postman you should write image
       const picture = imageUrl;
+      console.log(imageUrl)
       const result = await db.query('UPDATE users SET picture = $1 WHERE user_id = $2 RETURNING user_id',
       [picture, usid]);
 
       const updatedTaskId = result.rows[0].picture;
-      res.status(200).json({ success: true, message: 'picture updated successfully', updatedTaskId });
+      res.status(200).json({ success: true, message: 'picture updated successfully', picture : picture  });
     });
   } catch (error) {
     console.error('An error occurred while update the picture', error);
@@ -351,7 +360,8 @@ async function addPostOnCourse(req, res) {
   try {
     const usid = req.user.user_id;
     const course_id = req.params.course_id;
-    const { description, url } = req.body;
+  //  i am remove description
+    const { description } = req.body;
 
     const isUserRegistered = await isUserRegisteredInCourse(usid, course_id);
 
@@ -359,7 +369,7 @@ async function addPostOnCourse(req, res) {
       return res.status(403).json({ error: 'You are not registered in this course' });
     }
 
-    const result = await UserModel.postOnCourse(usid, course_id, description, url);
+    const result = await UserModel.postOnCourse(usid, course_id, description);
 
     const addedPostId = result.rows[0].post_course_id;
     res.status(200).json({ message: 'Post added successfully', addedPostId });
@@ -508,7 +518,18 @@ async function getStudentsInCourse(req, res) {
 }
 
 
+const GetUserData = async (req, res) => {
+  try {
+    const userId = req.user.user_id;
 
+    const result = await db.query('SELECT first_name, last_name, email, picture FROM users WHERE user_id = $1', [userId]);
+
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error('An error occurred while getting user data:', error);
+    res.status(500).json({ error: 'An error occurred while getting user data' });
+  }
+};
 
 module.exports = {
   signup,
@@ -526,7 +547,8 @@ module.exports = {
   updatePicture,
   GetUserCourse,
   getCourseAdmin,
-  getStudentsInCourse
+  getStudentsInCourse,
+  GetUserData
   
   // uploadProfilePicture,
   // imageProduct

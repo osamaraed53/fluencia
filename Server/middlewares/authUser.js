@@ -7,6 +7,8 @@ require('dotenv').config();
 
 async function authUser(req, res, next) {
     try {
+
+
         const authorizationHeader = req.headers['authorization'];
         if (authorizationHeader && authorizationHeader.startsWith('Bearer ')) {
             const accessToken = authorizationHeader.substring('Bearer '.length);        

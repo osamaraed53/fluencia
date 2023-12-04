@@ -1,19 +1,19 @@
 const db = require("../models/db");
 
 
-const addCourse = async (course_name, course_description, start_date, admin_id) => {
-  console.log( admin_id , 111111111111111111111111111111);
+const addCourse = async ( course_name, course_description, start_date, usid ,price)  => {
+  console.log( usid , 111111111111111111111111111111);
     const queryText = `
-      INSERT INTO courses (admin_id, course_name, course_description, start_date)
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO courses (admin_id, course_name, course_description, start_date , price)
+      VALUES ($1, $2, $3, $4, $5)
       RETURNING course_id;
     `;
   
-    const values = [admin_id, course_name, course_description, start_date];
+    const values = [ usid , course_name, course_description, start_date ,price];
   
     try {
       const result = await db.query(queryText, values);
-      return result.rows[0].course_id;
+      return result.rows[0];
     } catch (error) {
       console.error("Failed to add course in the model: ", error);
       throw new Error("Failed to add course in the model");
@@ -141,6 +141,24 @@ const GetCoursedeleted = async () => {
 
 //___________________________________
 
+async function GetCourseId(user_id){
+  const queryText = `
+    SELECT course_id FROM courses_user WHERE user_id = $1 and deleted = false
+  `
+  try{
+    const result = await db.query(queryText , [user_id])
+    console.log(result)
+    return result.rows
+  }catch(error) {
+    console.error("Failed to get deleted courses in the model: ", error);
+    throw new Error("Failed to get deleted courses in the model");
+  }
+}
+
+
+//______________________________________________________________________________________________
+
+
   module.exports = {
     addCourse,
     UpdateCourse,
@@ -148,5 +166,6 @@ const GetCoursedeleted = async () => {
     RestoreCourse,
     GetCourses,
     GetCoursedeleted,
-    GetCourseById
+    GetCourseById,
+    GetCourseId,
   };

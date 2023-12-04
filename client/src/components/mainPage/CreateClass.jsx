@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios"; // Import Axios
-import {addCourse} from '../ReduxSlice/courseSlice'
+import {addCourse} from '../../ReduxSlice/courseSlice'
 import { useDispatch, useSelector } from "react-redux";
 
-function AddNewCourse({ isOpenAddNewClass, setOpenAddNewClass }) {
+function AddNewCourse({ isOpenAddNewClass, setOpenAddNewClass,setFlag ,flag}) {
   
   const errors = useSelector((state)=>state.course.courseError)
   const data = useSelector((state)=>state.course.courses)
@@ -16,7 +16,7 @@ function AddNewCourse({ isOpenAddNewClass, setOpenAddNewClass }) {
     course_name: "",
     course_description: "",
     start_date: new Date(),
-    price: 10.3
+    price :"10.5"
   });
 
   const handleClose = () => {
@@ -34,7 +34,10 @@ function AddNewCourse({ isOpenAddNewClass, setOpenAddNewClass }) {
   const createClass = async (e) => {
     e.preventDefault();
     dispatch(addCourse(formData));
+    setFlag(!flag)
+    console.log(formData)
     handleClose()
+    
   };
 
   return (

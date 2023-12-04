@@ -6,7 +6,8 @@ import ServiceOne from '../landingPage/ServiceOne'
 import ServiceTwo from '../landingPage/ServiceTwo'
 import ServiceThree from '../landingPage/ServiceThree'
 import WeAre from '../landingPage/WeAre'
-import PayPlans from '../PayPlans'
+import PayPlans from '../landingPage/PayPlans'
+import CaseStory from '../landingPage/ReviewSection'
 
 const Landing = () => {
 
@@ -16,12 +17,16 @@ const Landing = () => {
     <>
     <Hero/>
     <OurService/>
-    <Stats/>
     <ServiceOne/>
     <ServiceTwo/>
     <ServiceThree/>
     <WeAre/>
+    <Stats/>
+
+    <CaseStory/>
+
     <PayPlans/>
+
     </>
   )
 }

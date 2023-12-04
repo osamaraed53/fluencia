@@ -2,6 +2,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import Cookies from "js-cookie";
+import Swal from "sweetalert2";
 
 // get token frm cookies to use in Authorization
 const token = Cookies.get("accessToken"); 
@@ -15,24 +16,28 @@ const headers = {
 export const addCourseToUser = (userId, courseId) => async (dispatch) => {   // 
   try {
     const response = await axios.post(`http://localhost:3000/addCoursetoUser/${userId}/${courseId}`,{},{headers});
-    alert("done")
     dispatch(addCourseToUserSuccess({ userId, courseId }));
-    dispatch(clearCourseUserError());
+    Swal.fire({
+      icon: "success",
+      title: "ADD successful!",
+      showConfirmButton: false,
+      timer: 1000,
+    });
   } catch (error) {
     dispatch(setCourseUserError("Error adding course to user. Please try again."));
   }
 };
 
 // Action to update a course for a user
-export const updateCourseForUser = (courseUserId, updatedData) => async (dispatch) => {
-  try {
-    await axios.put(`http://localhost:3000/updateCoursetoUser/${courseUserId}`, updatedData);
-    dispatch(updateCourseForUserSuccess({ courseUserId, updatedData }));
-    dispatch(clearCourseUserError());
-  } catch (error) {
-    dispatch(setCourseUserError("Error updating course for user. Please try again."));
-  }
-};
+// export const updateCourseForUser = (courseUserId, updatedData) => async (dispatch) => {
+//   try {
+//     await axios.put(`http://localhost:3000/updateCoursetoUser/${courseUserId}`, updatedData);
+//     dispatch(updateCourseForUserSuccess({ courseUserId, updatedData }));
+//     dispatch(clearCourseUserError());
+//   } catch (error) {
+//     dispatch(setCourseUserError("Error updating course for user. Please try again."));
+//   }
+// };
 
 // Action to delete a course for a user
 export const deleteCourseForUser = (course_user_id) => async (dispatch) => {
@@ -47,15 +52,15 @@ export const deleteCourseForUser = (course_user_id) => async (dispatch) => {
 };
 
 // Action to restore a deleted course for a user
-export const restoreCourseForUser = (courseUserId) => async (dispatch) => {
-  try {
-    await axios.put(`http://localhost:3000/restoreCourseForUser/${courseUserId}`);
-    dispatch(restoreCourseForUserSuccess(courseUserId));
-    dispatch(clearCourseUserError());
-  } catch (error) {
-    dispatch(setCourseUserError("Error restoring course for user. Please try again."));
-  }
-};
+// export const restoreCourseForUser = (courseUserId) => async (dispatch) => {
+//   try {
+//     await axios.put(`http://localhost:3000/restoreCourseForUser/${courseUserId}`);
+//     dispatch(restoreCourseForUserSuccess(courseUserId));
+//     dispatch(clearCourseUserError());
+//   } catch (error) {
+//     dispatch(setCourseUserError("Error restoring course for user. Please try again."));
+//   }
+// };
 
 // Action to fetch courses for a user
 export const fetchCoursesForUser = () => async (dispatch) => { //
@@ -75,24 +80,38 @@ export  const fetchCourseById = (course_id) => async (dispatch) => {
   try {
     const response = await axios.get(`http://localhost:3000/GetCourseById/${course_id}`,{ headers }); //
     const courses = response.data;
-    dispatch(setCoursesForUser(courses));
+    dispatch(setSelectedCourse(courses));
     dispatch(clearCourseUserError());
   } catch (error) {
     dispatch(setCourseUserError("Error fetching courses. Please try again."));
   }
 };
+// action to get course_id user in it 
+export  const GetCoursesIds = () => async (dispatch) => {
+  try {
+    const response = await axios.get(`http://localhost:3000/GetCourseId`,{ headers }); //
+    const courses_ids = response.data;
+    dispatch(setCoursesForUser(courses_ids));
+    dispatch(clearCourseUserError());
+  } catch (error) {
+    dispatch(setCourseUserError("Error fetching courses. Please try again."));
+  }
+};
+
+// action to get Teacher in specific course
 export  const fetchTeacher = (course_id) => async (dispatch) => {
   try {
     const response = await axios.get(`http://localhost:3000/getCourseAdmin/${course_id}`,{ headers }); //
     const courses = response.data;
     dispatch(setTeachersForCourse(courses));
-    console.log(courses)
 
     dispatch(clearCourseUserError());
   } catch (error) {
     dispatch(setCourseUserError("Error fetching courses. Please try again."));
   }
 };
+
+// action to get Student ] in specific course
 export  const fetchStudent = (course_id) => async (dispatch) => {
   try {
     const response = await axios.get(`http://localhost:3000/getStudentsInCourse/${course_id}`,{ headers }); //
@@ -104,12 +123,12 @@ export  const fetchStudent = (course_id) => async (dispatch) => {
   }
 };
 
-
 // courseUserSlice.js
 const courseUserSlice = createSlice({
   name: "courseUser",
   initialState: {
     userCourses: [],
+    selectedCourse : {},
     students : [],
     teachers : [],
     courseUserError: null,
@@ -118,6 +137,10 @@ const courseUserSlice = createSlice({
     addCourseToUserSuccess: (state, action) => {
       const { userId, courseId } = action.payload;
       state.userCourses.push({ userId, courseId });
+    },
+    setSelectedCourse: (state, action) => {
+      state.selectedCourse = action.payload;
+
     },
     updateCourseForUserSuccess: (state, action) => {
       const { courseUserId, updatedData } = action.payload;
@@ -164,7 +187,8 @@ export const {
   setCourseUserError,
   clearCourseUserError,
   setTeachersForCourse,
-  setStudentsForCourse
+  setStudentsForCourse,
+  setSelectedCourse
 } = courseUserSlice.actions;
 
 export default courseUserSlice.reducer;

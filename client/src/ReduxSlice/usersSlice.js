@@ -1,11 +1,20 @@
 // userActions.js
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import Cookies from "js-cookie";
+
+const token = Cookies.get("accessToken");
+const headers = {
+  Authorization: `Bearer ${token}`,
+  "Content-Type": "application/json",
+};
+
 
 // Action to fetch all users
-export const fetchUsers = () => async (dispatch) => {
+export const fetchAllUsers = () => async (dispatch) => {
   try {
-    const response = await axios.get("http://localhost:3000/GetUsers");
+
+    const response = await axios.get("http://localhost:3000/GetUsers",{headers});
     const users = response.data;
     console.log(users)
     dispatch(setUsers(users));
@@ -30,7 +39,7 @@ export const fetchUserById = (userId) => async (dispatch) => {
 // Action to fetch deleted users
 export const fetchDeletedUsers = () => async (dispatch) => {
   try {
-    const response = await axios.get("http://localhost:3000/GetDeletedUsers");
+    const response = await axios.get("http://localhost:3000/GetDeletedUsers",{});
     const deletedUsers = response.data;
     dispatch(setDeletedUsers(deletedUsers));
     dispatch(clearUserError());
@@ -41,8 +50,9 @@ export const fetchDeletedUsers = () => async (dispatch) => {
 
 // Action to soft delete a user
 export const softDeleteUser = (userId) => async (dispatch) => {
+  console.log("user_id",userId)
   try {
-    await axios.delete(`http://localhost:3000/SoftdeleteUser/${userId}`);
+    await axios.delete(`http://localhost:3000/SoftdeleteUser/${userId}`,{headers});
     dispatch(softDeleteExistingUser(userId));
     dispatch(clearUserError());
   } catch (error) {
@@ -53,7 +63,7 @@ export const softDeleteUser = (userId) => async (dispatch) => {
 // Action to restore a soft-deleted user
 export const restoreUser = (userId) => async (dispatch) => {
   try {
-    await axios.put(`http://localhost:3000/RestoreUser/${userId}`);
+    await axios.put(`http://localhost:3000/RestoreUser/${userId}`,{},{});
     dispatch(restoreSoftDeletedUser(userId));
     dispatch(clearUserError());
   } catch (error) {

@@ -1,26 +1,27 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import Swal from "sweetalert2";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 // import { useNavigate } from "react-router-dom";
 
 //  authAction
-
-
 
 // login
 export const loginAdmin = (userData) => async (dispatch) => {
   try {
     // Assuming your login endpoint is at /login
-    const response = await axios.post("http://localhost:3000/loginAdmin", userData);
+    const response = await axios.post(
+      "http://localhost:3000/loginAdmin",
+      userData
+    );
     const user = response.data;
     // console.log("login axios in action", user)
     dispatch(setLogin(user));
     dispatch(clearError());
-    Cookies.set("accessToken",user.token)
+    Cookies.set("accessToken", user.token);
     setTimeout(() => {
-      window.location.href = '/main';
-    },  1000);
+      window.location.href = "/main";
+    }, 1000);
   } catch (error) {
     dispatch(setError("Invalid credentials. Please try again."));
   }
@@ -45,16 +46,12 @@ export const signUpAdmin = (userData) => async (dispatch) => {
     // const navigate = useNavigate();
     // navigate("/")
     setTimeout(() => {
-      window.location.href = '/login';
-    },  2000);
-
+      window.location.href = "/login";
+    }, 2000);
   } catch (error) {
     dispatch(setError("Invalid credentials. Please try again."));
   }
 };
-
-
-
 
 // authSlice.
 const authSlice = createSlice({
@@ -68,7 +65,7 @@ const authSlice = createSlice({
     setSignUp: (state, action) => {},
     setLogin: (state, action) => {
       state.user = action.payload;
-      state.isAuthenticated = !!action.payload; // Set isAuthenticated based on whether user is truthy
+      state.isAuthenticated = !!action.payload;
     },
     setError: (state, action) => {
       state.error = action.payload;
@@ -79,8 +76,8 @@ const authSlice = createSlice({
     logoutAdmin: (state) => {
       state.user = null;
       state.isAuthenticated = false;
-      localStorage.clear()
-      Cookies.remove("accessToken")
+      localStorage.clear();
+      Cookies.remove("accessToken");
     },
   },
 });

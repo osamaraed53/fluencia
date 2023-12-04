@@ -1,17 +1,12 @@
 const db = require("../models/db");
 const CourseModel = require('../models/courseModel');
 
-
 async function addCourse(req, res) {
   console.log(req.user.user_id);
-  // const admin_id = req.params.Teacher_id;
-  const { course_name, course_description, start_date } = req.body;
-  // const admin_id = req.user.user_id;
-
-
+  const { course_name, course_description, start_date ,price } = req.body;
   try {
-    const usid = req.user.user_id;
-    const newCourseId = await CourseModel.addCourse( course_name, course_description, start_date, usid);
+    const {user_id} = req.user;
+    const newCourseId = await CourseModel.addCourse( course_name, course_description, start_date, user_id ,price);
 
     res.status(201).json({ message: "Course added successfully", course_id: newCourseId });
   } catch (error) {
@@ -23,7 +18,7 @@ async function addCourse(req, res) {
 //________________________________________________________________________________________________________________
 
 
-  async function UpdateCourse(req, res) {
+async function UpdateCourse(req, res) {
     const course_id = req.params.course_id;
     const { course_name, course_description, start_date } = req.body;
     const usid = req.user.user_id;
@@ -103,10 +98,18 @@ async function GetCoursedeleted(req, res) {
   }
 }
 
+//______________________________________________________________________________________________
 
-
-
-
+async function GetCourseId(req,res){
+  const {user_id} = req.user;
+  try{
+    const courseid = await CourseModel.GetCourseId(user_id)
+    res.status(200).json(courseid);
+  }catch(error){
+    console.error("Failed to get course id in the controller: ", error);
+    res.status(500).json({ error: "Failed to get courses id" });
+}
+}
   module.exports = {
     addCourse  ,
     UpdateCourse ,
@@ -114,5 +117,6 @@ async function GetCoursedeleted(req, res) {
     RestoreCourse,
     GetCourses,
     GetCoursedeleted,
-    GetCourseById
+    GetCourseById,
+    GetCourseId
   };

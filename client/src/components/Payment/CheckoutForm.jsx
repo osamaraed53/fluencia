@@ -4,11 +4,32 @@ import { ElementsConsumer, CardElement } from "@stripe/react-stripe-js";
 import { useCookies } from "react-cookie";
 import CardSection from "./CardSection";
 import Cookies from "js-cookie";
+import { useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
+
 
 const CheckoutForm = (props) => {
   // const [cookies] = useCookies(["accessToken"]);
   const token = Cookies.get("accessToken");
-
+  const navigate = useNavigate()
+  const {plan_id} = useParams()
+  let endPointForPayment ;
+  if(plan_id==1){
+    endPointForPayment= "create-customer"
+  }else if(plan_id==2){
+    endPointForPayment = "createCustomer2Months";
+  }
+  else if(plan_id==3){
+    endPointForPayment = "createCustomer3Months"
+  }else{
+    Swal.fire({
+      icon: "error",
+      title: "there are something wrong ",
+      showConfirmButton: false,
+      timer: 1000,
+    });
+    navigate("/contact")
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -33,13 +54,13 @@ const CheckoutForm = (props) => {
         };
 
         const response = await axios.post(
-          "http://localhost:3000/create-customer",
+          `http://localhost:3000/${endPointForPayment}`,
           {
             token: result.token.id,
           },{headers}
         );
         const sessionId = response.data.id;
-
+        console.log("osama raed alnobani")
         const { error } = await stripe.redirectToCheckout({
           sessionId: sessionId,
         });

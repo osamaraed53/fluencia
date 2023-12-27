@@ -11,17 +11,17 @@ const CheckTypeOfUser = (type = "none") => {
   );
 
 
-    // if(auth){
-    //   return "student";
-    // }else if(authForAdmin){
-    //   if(type == "type"){
-    //     return "both"
-    //   }
-    //   if(authForAdmin ==  1){
-    //     return "teacher"
-    //   }else{
-    //     return "admin"
-    //   }
+    if(auth){
+      return "student";
+    }else if(authForAdmin){
+      if(type == "type"){
+        return "both"
+      }
+      if(authForAdmin ==  1){
+        return "teacher"
+      }else{
+        return "admin"
+      }
 
 
     }else{

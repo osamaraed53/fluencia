@@ -7,13 +7,13 @@ const contactModel = require('../models/contactModel');
 async function submitContactUs(req, res) {
     try {
 
-        //   const user_id = req.params.user_id;
+          const user_id = 21;
 
       const { name, email, message } = req.body;
-      const result = await contactModel.addContactUs( name, email, message);
+      const result = await contactModel.addContactUs( name, email, message ,user_id);
       
-      const addedContactId = result.rows
-      res.status(200).json({ message: 'Message added successfully', addedContactId });
+
+      res.status(200).json({ message: 'Message added successfully' });
     } catch (error) {
       console.error('An error occurred while adding Message', error);
       res.status(500).json({ error: 'An error occurred while adding Message' });

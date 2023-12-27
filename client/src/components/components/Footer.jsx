@@ -1,10 +1,11 @@
 import React from "react";
-import logo from "../assets/fluencia.png";
-import {Link} from 'react-router-dom'
+import logo from "../../assets/fluencia.png";
+import {Link ,HashLink} from 'react-router-dom'
+
 
 const Footer = () => {
   return (
-    <footer class="bg-fluencia-dark-purple  ">
+    <footer class="bg-fluencia-dark-purple">
       <div class="md:px-16 px-4 pb-6 pt-10 sm:px-6  lg:pt-24">
         <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
           <div>
@@ -19,8 +20,7 @@ const Footer = () => {
             </div>
 
             <p class="mt-6 max-w-md text-center leading-relaxed text-white sm:max-w-xs sm:text-left">
-              Discover a wide array of smartphones, laptops, smart home devices,
-              wearables, and much more.
+            We're passionate about bringing a fresh and impactful approach to learning, helping individuals achieve their language goals with enthusiasm and confidence
             </p>
 
             <ul class="mt-8 flex justify-center gap-6 sm:justify-start md:gap-8">
@@ -97,21 +97,21 @@ const Footer = () => {
 
               <ul class="mt-8 space-y-4 text-sm">
                 <li>
-                  <a
+                  <Link
                     class="text-white transition hover:text-fluencia-blue"
-                    href="/"
+                    to="/faqs"
                   >
-                    Company History
-                  </a>
+                    FAQs
+                  </Link>
                 </li>
 
                 <li>
-                  <a
+                  <Link
                     class="text-white transition hover:text-fluencia-blue"
-                    href="/"
+                    to="/about"
                   >
-                    Meet the Team
-                  </a>
+                    About us
+                  </Link>
                 </li>
 
                 <li>
@@ -130,40 +130,33 @@ const Footer = () => {
 
               <ul class="mt-8 space-y-4 text-sm">
                 <li>
-                  <a
+                  <a smooth
                     class="text-white transition hover:text-fluencia-blue"
-                    href="/"
+                    href="/#FluencyProgram"
                   >
-                    Product Demos
+                    Fluency Program
                   </a>
                 </li>
 
                 <li>
-                  <a
+                  <a smooth
                     class="text-white transition hover:text-fluencia-blue"
-                    href="/"
+                    href="/#OurPodcast"
                   >
-                    Accessories and Add-ons
+                    PodCast
                   </a>
                 </li>
 
                 <li>
-                  <a
+                  <a smooth
                     class="text-white transition hover:text-fluencia-blue"
-                    href="/"
+                    href="/#EBook"
                   >
-                    Product Installation Support
+                    E-Book
                   </a>
                 </li>
 
-                <li>
-                  <a
-                    class="text-white transition hover:text-fluencia-blue"
-                    href="/"
-                  >
-                    Customer Support
-                  </a>
-                </li>
+   
               </ul>
             </div>
 
@@ -174,20 +167,20 @@ const Footer = () => {
                 <li>
                   <Link
                     class="text-white transition hover:text-fluencia-blue"
-                    to="/faqs"
+                    to="/adminSignIn"
                   >
-                    FAQs
+                    admin login 
                   </Link>
                 </li>
 
-                <li>
+                {/* <li>
                   <a
                     class="text-white transition hover:text-fluencia-blue"
                     href="/"
                   >
                     Support
                   </a>
-                </li>
+                </li> */}
               </ul>
             </div>
 
@@ -216,7 +209,7 @@ const Footer = () => {
                     </svg>
 
                     <span class="flex-1 text-white">
-                      gadgetloop@gmail.com
+                      fluncia@gmail.com
                     </span>
                   </a>
                 </li>

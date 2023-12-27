@@ -1,14 +1,9 @@
 // contactUsActions.js
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import Cookies from "js-cookie";
 import Swal from "sweetalert2";
 
-const token = Cookies.get("accessToken");
-const headers = {
-  Authorization: `Bearer ${token}`,
-  "Content-Type": "application/json",
-};
+import headers from '../axiosInstance'
 
 // Action to submit a contact form
 export const submitContactUs = (contactFormData) => async (dispatch) => {
@@ -32,7 +27,7 @@ export const getContactUsData = () => async (dispatch) => {
   try {
     const response = await axios.get("http://localhost:3000/getContactUsData",{headers});
     const contactData = response.data;
-    dispatch(setContactUsData(contactData));
+    dispatch(setContactUsData(contactData.contactData));
     dispatch(clearContactUsError());
   } catch (error) {
     dispatch(setContactUsError("Error fetching contact form data. Please try again."));

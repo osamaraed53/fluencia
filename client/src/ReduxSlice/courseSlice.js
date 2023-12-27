@@ -1,16 +1,9 @@
 // courseActions.js
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import Cookies from "js-cookie";
 import Swal from "sweetalert2";
 
-// get token frm cookies to use in Authorization
-const token = Cookies.get("accessToken");
-const headers = {
-  Authorization: `Bearer ${token}`,
-  "Content-Type": "application/json",
-};
-
+import headers from '../axiosInstance'
 // Action to fetch courses
 
 export const fetchActiveCourses = () => async (dispatch) => {
@@ -25,6 +18,8 @@ export const fetchActiveCourses = () => async (dispatch) => {
     dispatch(setCourseError("Error fetching courses. Please try again."));
   }
 };
+
+
 // Action to fetch HIDDEN courses
 export const fetchHiddenCourses = () => async (dispatch) => {
   try {
@@ -33,6 +28,20 @@ export const fetchHiddenCourses = () => async (dispatch) => {
     }); //
     const courses = response.data;
     dispatch(setHiddinCourses(courses));
+    // console.log(courses)
+    dispatch(clearCourseError());
+  } catch (error) {
+    // I'm set data in  state but in s
+    console.log(error);
+  }
+};
+export const GetCoursesByTeacher = () => async (dispatch) => {
+  try {
+    const response = await axios.get("http://localhost:3000/GetCoursesByTeacher", {
+      headers,
+    }); //
+    const courses = response.data;
+    dispatch(setCourses(courses));
     // console.log(courses)
     dispatch(clearCourseError());
   } catch (error) {

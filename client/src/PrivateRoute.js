@@ -1,32 +1,43 @@
 
 import { useSelector } from "react-redux";
-import {  useNavigate,Navigate } from "react-router-dom";
+// import {  useNavigate,Navigate } from "react-router-dom";
+
 
 // to set pages as private and get type Of User 
-const PrivateRoute = (type = "none") => {
+const CheckTypeOfUser = (type = "none") => {
   const auth = useSelector((state) => state.auth.isAuthenticated);
   const authForAdmin = useSelector(
-    (state) => state.authForAdmin.isAuthenticated
+    (state) => state.authForAdmin.role
   );
-  const navigate = useNavigate();
 
 
+    if(auth){
+      return "student";
+    }else if(authForAdmin){
+      if(type == "type"){
+        return "both"
+      }
+      if(authForAdmin ==  1){
+        return "teacher"
+      }else{
+        return "admin"
+      }
+
+
+    }else{
+      return "none"
+    }
   
-  if(!auth && type=="student"){
-    navigate("/");
-    return "none"
-  }else if(!authForAdmin && type=="admin"){
-    navigate("/");
-    return "none"
-  }
-  if (!auth && !authForAdmin && type != "type") {
-    console.log("Before redirect");
-    navigate("/");
-    console.log("After redirect");
-    return "none"
-    
-  }
-  // console.log("After redirect");
+
+
+  // if(!auth && type=="student"){
+  //   return "none"
+  // }else if(!authForAdmin && type=="admin"){
+  //   return "none"
+  // }
+  // if (!auth && !authForAdmin && type != "type") {
+  //   return "none" 
+  // }
 
   // To know the type Of User If I dont Know 
   if (auth) {
@@ -34,7 +45,7 @@ const PrivateRoute = (type = "none") => {
   }return "admin"
 };
 
-export default PrivateRoute;
+export default CheckTypeOfUser;
 
 
 

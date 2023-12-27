@@ -110,6 +110,50 @@ async function GetCourseId(req,res){
     res.status(500).json({ error: "Failed to get courses id" });
 }
 }
+
+//______________________________________________________________________________________________
+
+
+
+
+async function GetCoursesByTeacher(req, res) { 
+  try {
+    const teacher_id = req.user.user_id
+
+    const result = await db.query(
+      `SELECT course_id, course_name, course_description
+      FROM courses
+      WHERE admin_id = $1;`
+    ,[teacher_id]);
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error('Failed to get courses for this teacher', error);
+    res.status(500).json({ error: 'Failed to get courses for this teacher' });
+  }
+}
+
+
+
+async function UpdateTeacher(req, res) {
+  const course_id = req.params.course_id;
+  const newTeacherId = req.body.newTeacherId;
+
+  try {
+    await CourseModel.UpdateTeacher(course_id, newTeacherId);
+    res.status(200).json({ message: "Course teacher changed successfully" });
+  } catch (error) {
+    console.error("Failed to change course teacher in the controller: ", error);
+    res.status(500).json({ error: "Failed to change course teacher" });
+  }
+}
+
+
+
+
+
+
+//______________________________________________________________________________________________
   module.exports = {
     addCourse  ,
     UpdateCourse ,
@@ -118,5 +162,7 @@ async function GetCourseId(req,res){
     GetCourses,
     GetCoursedeleted,
     GetCourseById,
-    GetCourseId
+    GetCourseId,
+    GetCoursesByTeacher,
+    UpdateTeacher
   };

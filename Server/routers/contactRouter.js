@@ -5,9 +5,9 @@ const router = express.Router();
 //  const verify= require('../middlewares/verify')
 const authorize= require('../middlewares/authorization')
 
-router.post("/submitContactUs",contactController.submitContactUs);
-router.get("/getContactUsData",contactController.getContactUsData);
-router.delete("/deleteContactUs/:contact_id",contactController.deleteContactUs);
+router.post("/submitContactUs",contactController.submitContactUs);//
+router.get("/getContactUsData",contactController.getContactUsData);//
+router.delete("/deleteContactUs/:contact_id",contactController.deleteContactUs);//
 
 
 

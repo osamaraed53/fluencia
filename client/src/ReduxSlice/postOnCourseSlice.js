@@ -1,13 +1,7 @@
 // postOnCourseActions.js
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import Cookies from "js-cookie";
-
-const token = Cookies.get("accessToken"); 
-const headers = {
-  'Authorization': `Bearer ${token}`,
-  'Content-Type': 'application/json', 
-};
+import headers from '../axiosInstance'
 
 
 // Action to add a post on a course
@@ -60,6 +54,7 @@ export const getAllPostsOnCourse = (courseId) => async (dispatch) => {
   try {
     const response = await axios.get(`http://localhost:3000/getAllPostsOnCourse/${courseId}`,{headers});
     const posts = response.data;
+    console.log(posts)
     dispatch(setAllPostsOnCourse(posts));
     dispatch(clearPostOnCourseError());
   } catch (error) {

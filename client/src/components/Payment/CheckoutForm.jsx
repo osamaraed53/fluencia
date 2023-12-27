@@ -43,7 +43,7 @@ const CheckoutForm = (props) => {
     if (result.error) {
       console.log(result.error.message);
     } else {
-      console.log(result.token);
+      // console.log(result.token);
       const tok = token
 
       try {

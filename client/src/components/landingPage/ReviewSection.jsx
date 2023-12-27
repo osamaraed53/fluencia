@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -15,6 +15,12 @@ import 'swiper/css/pagination';
 import 'swiper/css/free-mode';
 import { useDispatch, useSelector } from "react-redux";
 import {fetchActiveCourses} from '../../ReduxSlice/courseSlice'
+import image1 from '../../assets/case/case1.jpg'
+import image2 from '../../assets/case/case2.jpg'
+import image3 from '../../assets/case/case3.jpg'
+import image4 from '../../assets/case/case4.jpg'
+import image5 from '../../assets/case/case5.jpg'
+import image6 from '../../assets/case/case6.jpg'
 
 // Import Swiper modules
 // SwiperCore.use([Autoplay]);
@@ -22,8 +28,9 @@ import {fetchActiveCourses} from '../../ReduxSlice/courseSlice'
 const  CaseStory = () => {
 
 
-  const dataFromFirstAPI = useSelector((state)=>state.course.courses)
-  // console.log("data", dataFromFirstAPI)
+
+
+
   const dispatch = useDispatch();
 
   useEffect(()=>{
@@ -57,6 +64,35 @@ const  CaseStory = () => {
     loop: true,
     effect: "fade",
   };
+
+
+
+  const data = [
+    {
+      title : "case1" ,
+      image :image1 
+    },
+    {
+      title : "case2" ,
+      image :image2
+    },
+    {
+      title : "case3" ,
+      image :image3 
+    },
+    {
+      title : "case4" ,
+      image :image4
+    },
+    {
+      title : "case5" ,
+      image :image5  
+    },
+    {
+      title : "case6" ,
+      image :image6 
+    },
+  ]
   
   return (
     <>
@@ -70,14 +106,17 @@ const  CaseStory = () => {
         <div className='max-w-screen-2xl mx-24 overflow-hidden relative pb-24'>
 
       <Swiper {...swiperParams}>
-        {dataFromFirstAPI.map((item, user_id) => (
-          <SwiperSlide key={item.course_id}>
+        {data.map((item, idx) => (
+          <SwiperSlide key={idx}>
             <div className='flex flex-row justify-items-center '>
-            <div className='flex flex-row gap-6 my-10 bg-white shadow-lg shadow-fluencia-purple/50  p-4 rounded-lg hover:scale-105'>
-                <img src="" alt="userpic" className='bg-[#000] row-span-2 w-10 h-10 rounded-full'/>
+            <div className='flex flex-row gap-6 my-10 bg-white shadow-lg shadow-fluencia-purple/50  w-60 h-48 p-4 rounded-lg hover:scale-105'>
+                {/* <img src="" alt="userpic" className='bg-[#000] row-span-2 w-10 h-10 rounded-full'/> */}
                 <div className='flex flex-col'>
-                    <span className='text-[#000] font-light text-[0.9rem]'>{item.course_name}</span>
-                    <span className='text-[#00000095] font-light text-[0.75rem]  max-h-4 h-8 hover:h-12 max-w-8 w-48 overflow-hidden hover:overflow-visible ' >{item.course_description}</span> 
+                    <span className='text-[#000] font-light text-[0.9rem]'>{item.title}</span>
+                    <span className='text-[#00000095] font-light text-[0.75rem]  w-48 h-30 ' >
+                    <img  src={item.image} className='w-48 h-30 '/>
+                      </span> 
+                    
                 </div>     
             </div>
          </div>

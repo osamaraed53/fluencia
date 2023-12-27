@@ -1,16 +1,65 @@
 import React, { useState,useEffect } from "react";
 import { signUp } from "../../ReduxSlice/AuthenticationSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { ToastContainer } from 'react-toastify';
+import { useGoogleLogin } from "@react-oauth/google";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 
 const SignUp = () => {
+
+  const navigate = useNavigate();
+  const [userGoogle, setUserGoogle] = useState([]);
+
+  // console.log(userGoogle);
+  const loginbygoogle = useGoogleLogin({
+    onSuccess: (codeResponse) => setUserGoogle(codeResponse),
+    onError: (error) => console.log("Login Failed:", error),
+  });
+
+
+
   const dispatch = useDispatch();
   const Autherror = useSelector((state) => state.auth.error);
   
 
   useEffect(()=>{
     window.scrollTo(0, 0);
+    if (userGoogle.access_token) {
+      axios
+        .get(
+          `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${userGoogle.access_token}`
+        )
+        .then(async (res) => {
+          // console.log("Google User Info:", res.data);
+          console.log(res.data);
 
-  },[])
+          try {
+            const response = await axios.post(
+              "http://localhost:3000/googleLogin",
+              res.data
+            );
+            console.log("Server response:", response.data);
+
+            // const token = response.data.token;
+
+
+            // Make sure the token is not undefined or null before storing it
+            // if (token) {
+            //   // login(token);
+            //   navigate("/");
+            // }
+
+            // Rest of your code...
+          } catch (error) {
+            console.log("Error:", error);
+          }
+        })
+        .catch((err) => console.log("Google User Info Error:", err.message));
+    }
+  }, [userGoogle, navigate]);
+
 
   // State to store form data
   const [formData, setFormData] = useState({
@@ -140,6 +189,7 @@ const SignUp = () => {
                   </div>
                   <div className="w-full px-3 mb-5">
                     <button
+                    onClick={()=>{loginbygoogle()}}
                       type="button"
                       className="w-full flex justify-center items-center gap-2 bg-white text-sm text-gray-600 p-2 rounded-md hover:bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 transition-colors duration-300 max-w-xs mx-auto"
                     >
@@ -170,6 +220,7 @@ const SignUp = () => {
             </div>
           </div>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

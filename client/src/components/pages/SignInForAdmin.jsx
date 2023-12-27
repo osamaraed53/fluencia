@@ -42,6 +42,7 @@ const LoginForAdmin = () => {
         >
           <div className="md:flex w-full">
             <div className="hidden md:block w-1/2 bg-fluencia-dark-purple py-10 px-10">
+                <h1 className="text-white text-5xl">Sign In Admin</h1>
 
             </div>
             <div className="w-full md:w-1/2 py-10 px-5 md:px-10">
@@ -49,7 +50,7 @@ const LoginForAdmin = () => {
                 <h1 className="font-bold text-3xl text-fluencia-dark-purple">
                   Welcome Back
                 </h1>
-                <p>Text Text Text Text</p>
+                <p></p>
               </div>
               <form
                 onSubmit={(e) => {
@@ -105,7 +106,7 @@ const LoginForAdmin = () => {
                       </button>
                     </div>
                     <div class="w-full px-3 mb-5">
-                      <button
+                      {/* <button
                         type="button"
                         class="w-full flex justify-center items-center gap-2 bg-white text-sm text-gray-600 p-2 rounded-md hover:bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 transition-colors duration-300 max-w-xs mx-auto"
                       >
@@ -133,17 +134,17 @@ const LoginForAdmin = () => {
                           ></path>
                         </svg>{" "}
                         Sign In with Google{" "}
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                 </div>
                 <div class="mt-4 text-sm text-gray-600 text-center">
-                  <p>
+                  {/* <p>
                     I don't have an account?{" "}
                     <a href="#" class="text-black hover:underline">
                       Register here
                     </a>
-                  </p>
+                  </p> */}
                 </div>
                 <div className="mt-4 text-sm text-red-600 text-center">
                   <p>{Autherror}</p>

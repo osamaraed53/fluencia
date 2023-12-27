@@ -11,11 +11,11 @@ const OurService = () => {
       <div className="absolute top-0 h-80 w-full bg-transparent">
         <div
           id="mainBox"
-          className="flex flex-col md:flex-row justify-center items-center h-80 w-full gap-x-4 md:gap-x-24"
+          className="flex flex-col md:flex-row md:flex-wrap sm:flex-wrap md:mt-0 sm:mt-4 justify-center items-center h-88 w-full gap-x-4 md:gap-x-24 md:gap-y-12"
         >
           <div
             id="serviceOne"
-            className="flex-shrink-0 h-48 w-48 md:h-60 md:w-60 flex flex-col  items-start bg-white border-2 border-solid border-fluencia-dark-purple shadow-xl rounded-xl p-4 mb-4 md:mb-0 hover:scale-125 duration-150"
+            className="flex-shrink-0 h-48 md:h-60 md:w-60 sm:w-96  w-10/12 flex flex-col  items-start bg-white border-2 border-solid border-fluencia-dark-purple-50/50 shadow-xl rounded-xl p-4 mb-4 md:mb-0 hover:scale-125 duration-150"
           >
             {/* Content for Service one */}
             <img src={podcast_icon} className="h-10 w-10 mb-2" alt=""></img>
@@ -29,7 +29,7 @@ const OurService = () => {
           
           <div
             id="serviceTwo"
-            className="flex-shrink-0 h-48 w-48 md:h-60 md:w-60 flex flex-col  items-start bg-white border-2 border-solid border-fluencia-dark-purple shadow-2xl rounded-xl p-4 mb-4 md:mb-0 hover:scale-125 duration-150"
+            className="flex-shrink-0 h-48  md:h-60 md:w-60 sm:w-96 w-10/12 flex flex-col  items-start bg-white border-2 border-solid border-fluencia-dark-purple50/50 shadow-2xl rounded-xl p-4 mb-4 md:mb-0 hover:scale-125 duration-150"
           >
             {/* Content for Service Two */}
             <img src={fluency_icon} className="h-10 w-10 mb-2" alt=""></img>
@@ -44,7 +44,7 @@ const OurService = () => {
           </div>
           <div
             id="serviceThree"
-            className="flex-shrink-0 h-48 w-48 md:h-60 md:w-60 flex flex-col  items-start bg-white border-2 border-solid border-fluencia-dark-purple shadow-2xl rounded-xl p-4 mb-4 md:mb-0 hover:scale-125 duration-150"
+            className="flex-shrink-0 h-48 w-10/12 md:h-60 md:w-60  sm:w-96 flex flex-col  items-start bg-white border-2 border-solid border-fluencia-dark-purple50/50 shadow-md rounded-xl p-4 mb-4 md:mb-0 hover:scale-125 duration-150"
           >
             {/* Content for Service Two */}
             <img src={ebook_icon} className="h-10 w-10 mb-2" alt=""></img>

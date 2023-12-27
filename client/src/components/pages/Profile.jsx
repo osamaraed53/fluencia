@@ -1,33 +1,32 @@
 import React, { useEffect, useState } from "react";
 // import { useAuth } from "../Context/AuthContext";
-import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
-import { updatePicture } from "../ReduxSlice/AuthenticationSlice";
-import Cookies from "js-cookie";
-import save from "../assets/save.svg";
+import { updatePicture ,updateUserData} from "../../ReduxSlice/AuthenticationSlice";
+import {updatePictureforAdmin ,updateAdminData} from '../../ReduxSlice/AuthenticationAdminSlice'
+import save from "../../assets/save.svg";
+import CheckTypeOfUser from "../../PrivateRoute";
+import { ToastContainer } from 'react-toastify';
+
+
 
 const ProfilePrivate = () => {
-  const token = Cookies.get("accessToken");
-  const headers = {
-    Authorization: `Bearer ${token}`,
-    "Content-Type": "application/json",
-  };
-
-  const [userData, setUserData] = useState([]);
+ const [userData, setUserData] = useState([]);
   //to allow modification on field
 
   const [apilityOfFirstName, setApilityOfFirstName] = useState(true);
   const [apilityOfLastName, setApilityOfLastName] = useState(true);
   const [apilityOfPhone, setApilityOfPhone] = useState(true);
   const [apilityOfEmail, setApilityOfEmail] = useState(true);
-  const dispatch = useDispatch();
-  const userDataFromStore = useSelector((state) => state.auth.user);
-  const errorInUpdate = useSelector((state) => state.auth.error);
-  // console.log(userDataFromStore)
 
+  const dispatch = useDispatch();
+  const type = CheckTypeOfUser();
+  const userDataForAdmin = useSelector((state) => state.authForAdmin.user);
+  const userDataFromStore = useSelector((state) => state.auth.user);
+  const profileData = type === "student" ?userDataFromStore  :userDataForAdmin ;
+  
   useEffect(() => {
-    setUserData(userDataFromStore);
-  }, [userDataFromStore]);
+    setUserData(profileData);
+  }, [profileData]);
 
   const handleUpdateImage = async (e) => {
     // Implement a file input in your form to let the user choose a new image
@@ -36,12 +35,15 @@ const ProfilePrivate = () => {
     if (fileInput) {
       const formData = new FormData();
       formData.append("image", fileInput);
-      dispatch(updatePicture(formData));
-      window.location.reload();
+      const updateMethod = type === 'student' ? updatePicture : updatePictureforAdmin ;   
+      dispatch(updateMethod(formData));
     } else {
       console.log("No new image selected.");
     }
   };
+
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -51,19 +53,16 @@ const ProfilePrivate = () => {
     });
   };
   const updateData = (e) => {
+    const updateDataFun = (type == 'student')?updateUserData :updateAdminData;
     if (userData) {
-      try {
-        axios.put("http://localhost:3000/updateUser", userData, {
-          headers,
-        });
-      } catch (error) {
-        console.log(error);
-      }
+      dispatch(updateDataFun(userData))
     }
   };
+
+
   return (
     <div>
-      <div className="h-[420px] mt-12 flex justify-center ">
+      <div className="mt-12 flex justify-center ">
         <div className="flex bg-gray-100 shadow-lg shadow-fluencia-purple/50 justify-center border border-solid p-6 md:p-8 w-3/4 rounded-3xl mb-40  h-[700px]">
           <div className="w-full h-full">
             <div className="flex flex-col md:flex-row gap-12 pb-4 justify-center items-center">
@@ -71,7 +70,7 @@ const ProfilePrivate = () => {
                 <img
                   id="preview_img"
                   src={
-                    userData !== null
+              (userData !== null  && userData.picture !== null)
                       ? userData.picture
                       : "https://i.pinimg.com/564x/02/59/54/0259543779b1c2db9ba9d62d47e11880.jpg"
                   }
@@ -88,7 +87,6 @@ const ProfilePrivate = () => {
                     className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
                   />
                 </label>
-                {errorInUpdate && errorInUpdate}
               </div>
               <div className="text-start w-1/2">
                 <h1 className="text-2xl md:text-4xl">
@@ -187,7 +185,7 @@ const ProfilePrivate = () => {
                     type="text"
                     name="phone"
                     placeholder="07##########"
-                    value={userData !== null ? "userData.Phone" : "user.Phone"}
+                    value={userData !== null ? userData.phone : ""}
                     onChange={(e) => handleChange(e)}
                     disabled={apilityOfPhone}
                     className="block text-sm py-3 px-4 rounded-lg w-full border border-[#0c4a6e69] outline-none"
@@ -280,6 +278,7 @@ const ProfilePrivate = () => {
           </div>
         </div>
       </div>
+      <ToastContainer/>
     </div>
   );
 };

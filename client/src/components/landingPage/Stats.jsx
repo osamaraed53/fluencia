@@ -27,11 +27,11 @@ export default () => {
           </p>
         </div>
         <div className="mt-12">
-          <ul className="flex flex-col gap-4 items-center justify-center sm:flex-row">
+          <ul className="flex flex-col gap-4 items-center justify-center sm:flex-row  lg:scale-100 md:scale-90 sm:scale-75 scale-75">
             {stats.map((item, idx) => (
               <li
                 key={idx}
-                className="w-20 h-30 ext-center  bg-white shadow-sm shadow-white  px-12 py-4 rounded-lg sm:w-auto"
+                className=" h-30 text-center bg-white shadow-sm shadow-white  px-12 py-4 rounded-lg sm:w-auto"
               >
                 <h4 className="text-4xl text-fluencia-dark-purple   font-semibold">
                   {item.data}

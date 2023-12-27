@@ -15,6 +15,9 @@ import courseSlice from "./ReduxSlice/courseSlice";
 import AuthenticationSlice from "./ReduxSlice/AuthenticationSlice";
 import searchSlice  from "./ReduxSlice/searchSlice";
 import postOnCourseSlice from "./ReduxSlice/postOnCourseSlice";
+import contactUsSlice from "./ReduxSlice/contactUsSlice";
+import faqsSlice from "./ReduxSlice/faqsSlice";
+
 
 const rootReducer = combineReducers({
   auth: AuthenticationSlice,
@@ -25,7 +28,9 @@ const rootReducer = combineReducers({
   task:taskSlice,
   userTask :userTaskSlice,
   search:searchSlice,
-  postOnCourse : postOnCourseSlice
+  postOnCourse : postOnCourseSlice,
+  contactUs : contactUsSlice, 
+  faq : faqsSlice
 });
 
 const persistConfig = {

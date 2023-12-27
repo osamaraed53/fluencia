@@ -7,13 +7,36 @@ const findByEmail = async (email) => {
   return result.rows[0];
 };
 
-const createUser = async ( first_name,last_name,email,password ) => {
+
+const createUser = async ( first_name,last_name,email,password ) => {  
   const result = await db.query(
     'INSERT INTO users( first_name,last_name,email,password ) VALUES($1, $2, $3,$4) RETURNING *',
     [ first_name,last_name,email,password ]
   );
   return result.rows[0];
 };
+
+
+
+
+const createUsersGoogle = async( first_name, last_name, email, picture ) => {
+  const password = "By Google";
+  const query = `
+  INSERT INTO users (first_name,last_name,email,password,picture) VALUES ($1, $2, $3, $4, $5)
+  RETURNING *`;
+
+  const values = [
+    first_name,
+    last_name,
+    email,
+    password,
+    picture,
+  ];
+  const user = await db.query(query, values);
+  return user.rows[0];
+
+
+}
 
 const checkEmail = async (email) => {
     
@@ -29,13 +52,20 @@ const checkEmail = async (email) => {
 
 //__________________________________________________________________________________________
 
-const updateUser = async ( first_name, last_name, email,user_id) => {
-    const queryText =
-      "UPDATE users SET first_name = $2, last_name = $3, email = $4 WHERE user_id = $1";
-    const values = [user_id, first_name, last_name, email ];
-    return db.query(queryText, values);
-  };
-
+const updateUser = async (first_name, last_name, email, phone, user_id) => {
+  const queryText =
+    "UPDATE users SET first_name = $2, last_name = $3, email = $4 ,phone = $5  WHERE user_id = $1 RETURNING first_name,last_name,email,phone,picture ";
+  const values = [user_id, first_name, last_name, email, phone];
+  
+  try {
+    const result = await db.query(queryText, values);
+    return result.rows[0]; // Assuming you want to return the first row of the result
+  } catch (error) {
+    // Handle the error appropriately
+    console.error("Error updating user:", error);
+    throw error; // Rethrow the error or handle it as needed
+  }
+};
 
 //__________________________________________________________________________________________
 
@@ -61,50 +91,50 @@ const GetUserCourse = async (user_id) => {
 //__________________________________________________________________________________________
 
 
-  const postOnCourse = async (user_id, course_id, description, url) => {
+  const postOnCourse = async (admin_id, course_id, description, url) => {
     const queryText = `
-      INSERT INTO post_on_course (course_id, user_id, description, url)
+      INSERT INTO post_on_course (course_id, admin_id, description, url)
       VALUES ($1, $2, $3, $4)
       RETURNING post_course_id
     `;
-    const values = [course_id, user_id, description, url];
+    const values = [course_id, admin_id, description, url];
     return db.query(queryText, values);
   };
 //__________________________________________________________________________________________
 
-  const updatePostOnCourse = async (user_id, post_course_id, description, url) => {
+  const updatePostOnCourse = async (admin_id, post_course_id, description) => {
     const queryText = `
       UPDATE post_on_course
-      SET description = $1, url = $2
-      WHERE post_course_id = $3 AND user_id = $4
+      SET description = $1,
+      WHERE post_course_id = $2 AND admin_id = $3
       RETURNING post_course_id
     `;
-    const values = [description, url, post_course_id, user_id];
+    const values = [description, post_course_id, admin_id];
     return db.query(queryText, values);
   };
   
 //__________________________________________________________________________________________
 
-  const deletePostOnCourse = async (user_id, post_course_id) => {
+  const deletePostOnCourse = async (admin_id, post_course_id) => {
     const queryText = `
       UPDATE post_on_course
       SET deleted = true
-      WHERE post_course_id = $1 AND user_id = $2
+      WHERE post_course_id = $1 AND admin_id = $2
       RETURNING post_course_id
     `;
-    const values = [post_course_id, user_id];
+    const values = [post_course_id, admin_id];
     return db.query(queryText, values);
   }; 
 //__________________________________________________________________________________________
 
-  const getPostsOnCourse = async (user_id) => {
+  const getPostsOnCourse = async (admin_id) => {
     const queryText = `
-      SELECT users.first_name, users.last_name, post_on_course.description, post_on_course.url
+      SELECT admin.first_name, admin.last_name, post_on_course.description, post_on_course.url
       FROM post_on_course 
-      JOIN users ON post_on_course.user_id = users.user_id
-      WHERE post_on_course.user_id = $1 AND post_on_course.deleted = false
-    `;
-    const values = [user_id];
+      JOIN admin ON post_on_course.admin = admin.admin_id
+      WHERE post_on_course.admin_id = $1 AND post_on_course.deleted = false
+    `; 
+    const values = [admin_id];
     return db.query(queryText, values);
   }; 
 
@@ -112,9 +142,9 @@ const GetUserCourse = async (user_id) => {
 
 const getAllPostsOnCourse = async (course_id) => {
   const queryText = `
-    SELECT post_on_course.post_course_id ,users.first_name, users.last_name,users.picture,users.email ,post_on_course.description, post_on_course.url
+    SELECT post_on_course.post_course_id ,admin.first_name, admin.last_name,admin.picture,admin.email ,post_on_course.description, post_on_course.url
     FROM post_on_course 
-    JOIN users ON post_on_course.user_id = users.user_id
+    JOIN admin ON post_on_course.admin_id = admin.admin_id
     WHERE post_on_course.course_id = $1 AND post_on_course.deleted = false
   `;
   const values = [course_id];
@@ -155,11 +185,26 @@ async function getTaskDetails(usersTaskId,usid) {
 
 //__________________________________________________________________________________________
 
+async function updatephone(phone, userId) {
+  try {
+    const query = 'UPDATE users SET phone = $1 WHERE user_id = $2 RETURNING user_id, phone';
+    const result = await db.query(query, [phone, userId]);
+    return result.rows[0];
+  } catch (error) {
+    throw error;
+  }
+}
+
+//__________________________________________________________________________________________
+
+
+
+//__________________________________________________________________________________________
 
 async function getCourseAdmin(course_id) {
   try {
     const result = await db.query(
-      `SELECT admin.first_name, admin.last_name ,admin.email
+      `SELECT admin.first_name, admin.last_name ,admin.email ,admin.picture
       FROM courses
       JOIN admin ON courses.admin_id = admin.admin_id
       WHERE courses.course_id = $1`
@@ -176,7 +221,7 @@ async function getStudentsInCourse(course_id) {
   try {
     // i am change query
     const result = await db.query(
-      `SELECT courses_user.course_user_id, users.user_id, users.first_name, users.last_name, users.email, users.picture 
+      `SELECT courses_user.course_user_id, users.picture, users.user_id, users.first_name, users.last_name, users.email, users.picture 
       FROM courses_user
       JOIN users ON courses_user.user_id = users.user_id
       WHERE courses_user.course_id = $1 AND courses_user.deleted = false;
@@ -189,7 +234,6 @@ async function getStudentsInCourse(course_id) {
   }
 }
 
-
 const GetUserInformation = async (user_id) => {
     
   const result = await db.query('SELECT * FROM users WHERE user_id = $1 ', [
@@ -197,8 +241,6 @@ const GetUserInformation = async (user_id) => {
   ]);
   return result.rows[0];
 };
-
-
 
 module.exports = {
   findByEmail,
@@ -213,5 +255,6 @@ module.exports = {
   GetUserCourse,
   getTaskDetails,
   getCourseAdmin,getStudentsInCourse,
-  GetUserInformation
+  GetUserInformation,updatephone,createUsersGoogle
+
 };

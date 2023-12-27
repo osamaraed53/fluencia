@@ -1,8 +1,29 @@
 import React from "react";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../../ReduxSlice/AuthenticationSlice";
+import { login,Googlelogin } from "../../ReduxSlice/AuthenticationSlice";
+import { useGoogleLogin } from "@react-oauth/google";
+import { useNavigate } from "react-router-dom";
+ 
+
 const Login = () => {
+  const [userGoogle, setUserGoogle] = useState([]);
+  const navigate = useNavigate();
+  
+  // console.log(userGoogle);
+  const loginbygoogle = useGoogleLogin({
+    onSuccess: (codeResponse) => setUserGoogle(codeResponse),
+    onError: (error) => console.log("Login Failed:", error),
+  });
+
+
+  useEffect(()=>{
+    window.scrollTo(0, 0);
+    if (userGoogle.access_token) {
+      dispatch(Googlelogin(userGoogle.access_token))
+    }
+  }, [userGoogle, navigate]);
+
   // state to save data from form
   const [formData, setFormData] = useState({
     email: "",
@@ -10,10 +31,6 @@ const Login = () => {
   });
 
 
-  // const auth = useSelector((state) => state.auth.isAuthenticated);
-  // if (auth == false) {
-  //   localStorage.clear();
-  // }
 
   // get data from Redux store
   const Autherror = useSelector((state) => state.auth.error);
@@ -33,16 +50,6 @@ const Login = () => {
     dispatch(login(formData));
   };
 
-  // const googleLogin = useGoogleLogin({
-  //   onSuccess: async ({ code }) => {
-  //     const tokens = await axios.post('http://localhost:3001/auth/google', {  // http://localhost:3001/auth/google backend that will exchange the code
-  //       code,
-  //     });
-  
-  //     console.log(tokens);
-  //   },
-  //   flow: 'auth-code',
-  // });
 
   return (
     <>
@@ -58,10 +65,14 @@ const Login = () => {
             </div>
             <div className="w-full md:w-1/2 py-10 px-5 md:px-10">
               <div className="text-start mb-10">
-                <h1 className="font-bold text-3xl text-fluencia-dark-purple">
-                  Welcome Back
-                </h1>
-                <p>Text Text Text Text</p>
+              <h4 className=" text-4xl font-semibold text-fluencia-dark-purple">
+              {" "}
+              <span className="text-fluencia-purple tracking-wide">
+                Welcome
+              </span>
+              <span className="text-fluencia-light-purple">fluencia</span>
+            </h4>
+                {/* <p>Text Text Text Text</p> */}
               </div>
               <form
                 onSubmit={(e) => {
@@ -104,6 +115,8 @@ const Login = () => {
                             handleInputChange(e);
                           }}
                         />
+
+                        
                       </div>
                     </div>
                   </div>
@@ -118,6 +131,7 @@ const Login = () => {
                     </div>
                     <div class="w-full px-3 mb-5">
                       <button
+                      onClick={()=>{loginbygoogle()}}
                         type="button"
                         class="w-full flex justify-center items-center gap-2 bg-white text-sm text-gray-600 p-2 rounded-md hover:bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 transition-colors duration-300 max-w-xs mx-auto"
                       >

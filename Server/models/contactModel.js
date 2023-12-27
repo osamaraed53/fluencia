@@ -1,14 +1,14 @@
 const db = require("../models/db");
 
-const addContactUs = async (name, email, message) => {
+const addContactUs = async (name, email, message ,user_id) => {
   const queryText =
-    "INSERT INTO contact_us ( name, email, message) VALUES ($1, $2, $3) RETURNING contact_id";
-  const values = [name, email, message];
+    "INSERT INTO contact_us ( name, email, message , user_id) VALUES ($1, $2, $3,$4)";
+  const values = [name, email, message,user_id];
   return db.query(queryText, values);
 };
 
 const getContactUsData = async () => {
-  const queryText = "SELECT name,email,message FROM contact_us";
+  const queryText = "SELECT * FROM contact_us WHERE deleted = false";
   return db.query(queryText);
 };
 

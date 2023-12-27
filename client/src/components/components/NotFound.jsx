@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import image from '../assets/flo.jpg'
+import image from '../../assets/flo.jpg'
 import { Link } from 'react-router-dom'
 
 export default function NotFound() {

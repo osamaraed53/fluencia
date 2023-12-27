@@ -7,54 +7,17 @@ const { admin } = require('../firebase');
 
 
 const multer = require('multer');
-// const upload = multer({ storage: storage });
 
 const path = require('path');
 const { log } = require("console");
 const storage = multer.memoryStorage(); 
 const upload = multer({ storage: storage }).single('image');
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, 'images'); // المجلد الذي ستحفظ فيه الصورة
-//   },
-//   filename: function (req, file, cb) {
-//     cb(null, Date.now() + path.extname(file.originalname)); // إعطاء الصورة اسم فريد
-//   },
-// });
-//____________________________________________________________________________
-// Storage Image By Multer Start
-// let lastFileSequence = 0;
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, "images");
-//   },
-//   filename: (req, file, cb) => {
-//     lastFileSequence++;
-//     const newFileName = `${Date.now()}_${lastFileSequence}${path.extname(file.originalname)}`;
-//     cb(null, newFileName);
-//   }
-// });
-
-// const addImage = multer({ storage: storage });
-// const imageProduct = addImage.single("image");
-// Storage Image By Multer End
-
-
-
-//_____________________________________________________________________
-
-
-
-
-// const cookies = require("js-cookie");
-// const storage = multer.memoryStorage(); // سيتم تخزين الصورة في الذاكرة
 
 
 const signup = async (req, res) => {
   const {  first_name,last_name,email,password } = req.body;
 
   try {
-    // Check if email is already taken
     const existingUser = await UserModel.findByEmail(email);
 
     if (existingUser) {
@@ -136,6 +99,7 @@ const login = async (req, res) => {
         last_name :user.last_name,
         picture :user.picture,
         email : user.email,
+        phone : user.phone,
         is_pay : user.is_pay
       },
     });
@@ -148,14 +112,13 @@ const login = async (req, res) => {
 };
 
 
-//_______________________________________________________________________________________________ 666
+//_______________________________________________________________________________________________ 
 
 const updateUser = async (req, res) => {
-  // const user_id = req.params.id;
   const usid = req.user.user_id;
   const userInformation = await UserModel.GetUserInformation(usid)
 
-  const { first_name =userInformation.first_name, last_name=userInformation.first_name, email=userInformation.email } = req.body;
+  const { first_name =userInformation.first_name, last_name=userInformation.last_name, email=userInformation.email , phone=userInformation.phone} = req.body;
 
   try {
 
@@ -166,30 +129,23 @@ const updateUser = async (req, res) => {
         .string()
         .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
         .required(),
-      // password: joi
-      //   .string()
-      //   .pattern(
-      //     new RegExp(
-      //       "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d@$!%*?&^#]{6,30}$"
-      //     )
-      //   ),
+     
     });
 
     const { error } = schema.validate({
       first_name,
       last_name,
       email,
+  
     });
 
     if (error) {
       return res.status(400).json({ error: error.details });
     }
 
-    // const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
-
-    const result = await UserModel.updateUser( first_name, last_name, email,usid);
-
-    return res.status(200).json({ message: "User updated successfully" });
+    const result = await UserModel.updateUser( first_name, last_name, email,phone,usid);
+    console.log(result)
+    return res.status(200).json({ message: "User updated successfully", result });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Update user failed" });
@@ -214,14 +170,7 @@ async function updatePicture(req, res) {
 
 
       const imageUrl = await uploadImageToFirebase(imageBuffer);
-      
-      
 
-      // if (!image || !image.filename) {
-      //   return res.status(400).json({ success: false, error: 'The image must be uploaded' });
-      // }
-
-      // const answer_url = path.join('image', imageUrl);     //on postman you should write image
       const picture = imageUrl;
       console.log(imageUrl)
       const result = await db.query('UPDATE users SET picture = $1 WHERE user_id = $2 RETURNING user_id',
@@ -252,18 +201,13 @@ async function submitTask(req, res) {
       const usid = req.user.user_id;
       const users_task_id = req.params.users_task_id;
 
-      const imageBuffer = req.file ? req.file.buffer : null;
+      
+      const imageBuffer = req.file.buffer ;
 
       const imageUrl = await uploadImageToFirebase(imageBuffer);
-      
-
-      // if (!image || !image.filename) {
-      //   return res.status(400).json({ success: false, error: 'The image must be uploaded' });
-      // }
-
-      // const answer_url = path.join('image', imageUrl);     //on postman you should write image
+     
       const answer_url = imageUrl;
-      const result = await db.query('UPDATE users_task SET submit_date = DEFAULT, answer_url = $1 WHERE user_id = $2 AND users_task_id = $3 RETURNING users_task_id',
+      const result = await db.query('UPDATE users_task SET submit_date = DEFAULT, answer_url = $1,show=false WHERE user_id = $2 AND users_task_id = $3 RETURNING users_task_id',
        [answer_url, usid, users_task_id]);
 
       const updatedTaskId = result.rows[0].users_task_id;
@@ -288,10 +232,9 @@ const uploadImageToFirebase = async (imageBuffer) => {
     const file = bucket.file(filePath);
     await file.createWriteStream().end(imageBuffer);
 
-    // Get the signed URL for the uploaded file
     const [url] = await file.getSignedUrl({
       action: 'read',
-      expires: '03-09-2500', // Set an appropriate expiration date
+      expires: '03-09-2500', 
     });
 
     return url;
@@ -302,39 +245,6 @@ const uploadImageToFirebase = async (imageBuffer) => {
 };
 
 //_______________________________________________________________________________________________
-
-
-// async function getTaskDetails(req, res) {
-//   try {
-//     const users_task_id = req.params.users_task_id;
-
-    
-//     const result = await db.query(`
-//       SELECT users.first_name, 
-//              users.last_name, 
-//              task.task_description, 
-//              task.task_url, 
-//              users_task.start_date, 
-//              users_task.end_date,
-//              users_task.submit_date,
-//              users_task.answer_url
-//       FROM users_task 
-//       JOIN users ON users_task.user_id = users.user_id
-//       JOIN task ON users_task.task_id = task.task_id
-//       WHERE users_task.users_task_id = $1
-//     `, [users_task_id]);
-
-//     const taskDetails = result.rows[0];
-
-//     res.status(200).json({ taskDetails });
-//   } catch (error) {
-//     console.error('An error occurred while retrieving details', error);
-//     res.status(500).json({ error: 'An error occurred while retrieving details' });
-//   }
-// }
-
-
-
 
 
 async function getTaskDetails(req, res) {
@@ -360,14 +270,7 @@ async function addPostOnCourse(req, res) {
   try {
     const usid = req.user.user_id;
     const course_id = req.params.course_id;
-  //  i am remove description
     const { description } = req.body;
-
-    const isUserRegistered = await isUserRegisteredInCourse(usid, course_id);
-
-    if (!isUserRegistered) {
-      return res.status(403).json({ error: 'You are not registered in this course' });
-    }
 
     const result = await UserModel.postOnCourse(usid, course_id, description);
 
@@ -388,13 +291,12 @@ async function isUserRegisteredInCourse(user_id, course_id) {
 
 async function updatePostOnCourse(req, res) {
   try {
-    // const user_id = req.params.user_id; 
     const usid = req.user.user_id;
 
     const post_course_id = req.params.post_course_id;
-    const { description, url } = req.body;
+    const { description } = req.body;
 
-    const result = await UserModel.updatePostOnCourse(usid, post_course_id, description, url);
+    const result = await UserModel.updatePostOnCourse(usid, post_course_id, description);
 
     const updatedPostId = result.rows[0].post_course_id;
     res.status(200).json({ message: 'The post has been updated successfully', updatedPostId });
@@ -420,13 +322,10 @@ async function GetUserCourse (req, res) {
 }
 
 
-
-
 //_______________________________________________________________________________________________
 
 async function deletePostOnCourse(req, res) {
   try {
-    // const user_id = req.params.user_id;
     const usid = req.user.user_id;
 
     const post_course_id = req.params.post_course_id;
@@ -444,7 +343,6 @@ async function deletePostOnCourse(req, res) {
 
 async function getPostsOnCourse(req, res) {
   try {
-    // const user_id = req.params.user_id;
     const usid = req.user.user_id;
 
     const result = await UserModel.getPostsOnCourse(usid);
@@ -473,17 +371,95 @@ async function getAllPostsOnCourse(req, res) {
 }
 
 //_______________________________________________________________________________________________
+
+
+
+async function googleLogin(req, res) {
+  try {
+    const first_name = req.body.given_name;
+    const last_name = req.body.family_name;
+    const { email, picture } = req.body;
+
+    const existUser = await UserModel.findByEmail(email);
+
+    if (existUser) {
+      try {
+
+        const payload = {
+          email: existUser.email,
+          user_id: existUser.user_id,
+       };
+   
+       const secretKey = process.env.SECRET_KEY;
+       const token = jwt.sign(payload, secretKey, { expiresIn: '7d' });
+
+
+        return res.status(200).json({
+          message: 'User signed in successfully',
+          token: token,
+          data: {
+            first_name : existUser.first_name,
+            last_name :existUser.last_name,
+            picture :existUser.picture,
+            email : existUser.email,
+            phone : existUser.phone,
+            is_pay : existUser.is_pay
+          },
+        });
+      } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+    } else {
+
+      const user = await UserModel.createUsersGoogle(first_name,last_name , email, picture);
+      console.log(user);
+      const payload = {
+        first_name: user.first_name,
+        email: user.email,
+        user_id: user.user_id,
+      };
+      const secretKey = process.env.SECRET_KEY;
+      const token = jwt.sign(payload, secretKey, { expiresIn: "6h" });
+
+      return res.status(200).json({
+        logmessage: "User added successfully",
+        token: token,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+//_______________________________________________________________________________________________
+
+const updatephone = async (req, res) => {
+  const { phone } = req.body;
+
+  try {
+    const usid = req.user.user_id;
+
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(phone)) {
+      return res.status(400).json({ error: 'Invalid phone number format or length' });
+    }
+
+    const result = await UserModel.updatephone(phone, usid);
+
+    return res.status(200).json({ message: "Phone updated successfully" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Update Phone failed" });
+  }
+};
+
+//_______________________________________________________________________________________________
 async function getCourseAdmin(req, res) {
   try {
     const course_id = req.params.course_id;
-
-    if(course_id == -1){
-
-      const usid = req.user.user_id;
-      console.log(usid)
-      const course = await UserModel.GetUserCourse(usid);
-      course_id = course.course_id;
-    }
 
 
     const adminInfo = await UserModel.getCourseAdmin(course_id);
@@ -498,16 +474,6 @@ async function getCourseAdmin(req, res) {
 async function getStudentsInCourse(req, res) {
   try {
     let course_id = req.params.course_id ; 
-
-    // should test I am not test it  Osama Nobani
-    if(course_id == -1){
-
-      const usid = req.user.user_id;
-      console.log(usid)
-      const course = await UserModel.GetUserCourse(usid);
-      course_id = course.course_id;
-    }
-
     const students = await UserModel.getStudentsInCourse(course_id);
 
     res.status(200).json( students );
@@ -548,9 +514,6 @@ module.exports = {
   GetUserCourse,
   getCourseAdmin,
   getStudentsInCourse,
-  GetUserData
+  GetUserData,updatephone,googleLogin
   
-  // uploadProfilePicture,
-  // imageProduct
-  // imageProduct
 };

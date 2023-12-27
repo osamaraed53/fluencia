@@ -1,22 +1,46 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import Swal from "sweetalert2";
 import Cookies from 'js-cookie';
-import { useDispatch,useSelector } from "react-redux";
-import {GetCoursesIds } from './courseUserSlice'
-// import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // to access in store 
-
-const token = Cookies.get("accessToken"); 
-const headers = {
-  'Authorization': `Bearer ${token}`,
-  "Content-Type": "multipart/form-data" 
-};
-
+import headers from '../axiosInstance'
 
 //  authAction
 
 // login
+
+export const Googlelogin = (googleToken) => async (dispatch) => {
+  axios
+  .get(
+    `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${googleToken}`
+  )
+  .then(async (res) => {
+    // console.log("Google User Info:", res.data);
+    console.log(res.data);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/googleLogin",
+        res.data
+      );
+      const user = response.data;
+      dispatch(setLogin(user.data));
+      dispatch(clearError());
+      Cookies.set("accessToken", user.token);
+      setTimeout(() => {
+        window.location.href = "/main";
+      }, 1000);
+
+    } catch (error) {
+      console.log("Error:", error);
+    }
+  })
+  .catch((err) => console.log("Google User Info Error:", err.message));
+}
+
+
+
 export const login = (userData) => async (dispatch) => {
   try {
     // Assuming your login endpoint is at /login
@@ -45,11 +69,13 @@ export const signUp = (userData) => async (dispatch) => {
     dispatch(setSignUp(user));
     dispatch(clearError());
     // when sign-up is successful open
-    Swal.fire({
-      icon: "success",
-      title: "Sign-up successful!",
-      showConfirmButton: false,
-      timer: 1000,
+    toast.success(' successful !', {
+      position: 'bottom-right',
+      autoClose: 2000, // Close the toast after 3 seconds
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
     });
     // this generate error
     // const navigate = useNavigate();
@@ -60,8 +86,51 @@ export const signUp = (userData) => async (dispatch) => {
 
   } catch (error) {
     dispatch(setError("Invalid credentials. Please try again."));
+    toast.error(' Invalid ! Please try again.', {
+      position: 'bottom-right',
+      autoClose: 2000, // Close the toast after 3 seconds
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
   }
 };
+
+
+export const updateUserData = (userData) => async (dispatch) => {
+  try {
+    const response = await axios.put("http://localhost:3000/updateUser", userData ,{headers});
+    const user = response.data.result;
+    dispatch(setUserData(user));
+    dispatch(clearError());
+    // when sign-up is successful open
+    toast.success(' successful !', {
+      position: 'bottom-right',
+      autoClose: 2000, // Close the toast after 3 seconds
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+  } catch (error) {
+    dispatch(setError("Invalid credentials. Please try again."));
+    toast.error(' Invalid ! Please try again.', {
+      position: 'bottom-right',
+      autoClose: 2000, // Close the toast after 3 seconds
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+  }
+};
+
+
+
+
+
+
 
 export const updatePicture = (formData) => async (dispatch) => {
   try {
@@ -73,17 +142,37 @@ export const updatePicture = (formData) => async (dispatch) => {
     dispatch(setPicture(user.picture));
     dispatch(clearError());
     // when sign-up is successful open
-    Swal.fire({
-      icon: "success",
-      title: "Update successful!",
-      showConfirmButton: false,
-      timer: 1000,
+
+    toast.success(' Update successful! !', {
+      position: 'bottom-right',
+      autoClose: 2000, // Close the toast after 3 seconds
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
     });
+    setTimeout(() => {
+      window.location.reload();
+    }, 3000);
+
 
   } catch (error) {
     dispatch(setError("Invalid credentials. Please try again."));
+    toast.error('Invalid. Please try again.', {
+      position: 'bottom-right',
+      autoClose: 2000, // Close the toast after 3 seconds
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+
   }
 };
+
+
+// log Out action 
+
 
 
 // authSlice.
@@ -100,6 +189,11 @@ const authSlice = createSlice({
       state.user = action.payload;
       state.isAuthenticated = !!action.payload;
     },
+    setUserData: (state, action) => {
+      state.user = action.payload;
+
+    },
+    
     setPicture: (state, action) => {
       state.user.picture = action.payload;
     },
@@ -112,11 +206,13 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.isAuthenticated = false;
-      localStorage.clear()
+      window.sessionStorage.clear();
+      Cookies.remove("accessToken")
+      window.location.href = "/";
     },
   },
 });
 
-export const { setSignUp, setLogin, setError, clearError, logout ,setPicture} =
+export const { setSignUp, setLogin, setError, clearError, logout ,setPicture,setUserData} =
   authSlice.actions;
 export default authSlice.reducer;

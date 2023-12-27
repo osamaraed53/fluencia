@@ -1,19 +1,12 @@
 // courseUserActions.js
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import Cookies from "js-cookie";
 import Swal from "sweetalert2";
-
-// get token frm cookies to use in Authorization
-const token = Cookies.get("accessToken"); 
-const headers = {
-  'Authorization': `Bearer ${token}`,
-  'Content-Type': 'application/json', 
-};
+import headers from '../axiosInstance'
 
 
 // Action to add a course to a user
-export const addCourseToUser = (userId, courseId) => async (dispatch) => {   // 
+export const addCourseToUser = (courseId, userId) => async (dispatch) => {   // 
   try {
     const response = await axios.post(`http://localhost:3000/addCoursetoUser/${userId}/${courseId}`,{},{headers});
     dispatch(addCourseToUserSuccess({ userId, courseId }));
@@ -44,6 +37,16 @@ export const deleteCourseForUser = (course_user_id) => async (dispatch) => {
   try {
     await axios.delete(`http://localhost:3000/deleteCourseForUser/${course_user_id}`,{headers});
     dispatch(deleteCourseForUserSuccess(course_user_id));
+    dispatch(clearCourseUserError());
+    alert("done")
+  } catch (error) {
+    dispatch(setCourseUserError("Error deleting course for user. Please try again."));
+  }
+};
+export const UpdateTeacher = (course_id,teacher_id) => async (dispatch) => {
+  try {
+    await axios.put(`http://localhost:3000/UpdateTeacher/${course_id}`,{newTeacherId :teacher_id},{headers});
+    // dispatch(deleteCourseForUserSuccess(course_id));
     dispatch(clearCourseUserError());
     alert("done")
   } catch (error) {

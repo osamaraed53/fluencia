@@ -1,18 +1,14 @@
 // userTaskActions.js
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import Cookies from "js-cookie";
-
-const token = Cookies.get("accessToken");
-const headers = {
-  Authorization: `Bearer ${token}`,
-  "Content-Type": "application/json",
-};
+import headers from '../axiosInstance'
 // Action to add a task to a user
-export const addTaskToUser = (adminId, userId, taskId) => async (dispatch) => {
+
+
+export const addTaskToUser = (userId, taskId,start_date,end_date,course_id) => async (dispatch) => {
   try {
-    await axios.post(`http://localhost:3000/addTasktoUser/${adminId}/${userId}/${taskId}`);
-    dispatch(addTaskToUserSuccess({ adminId, userId, taskId }));
+    await axios.post(`http://localhost:3000/addTasktoUser/${userId}/${course_id}/${taskId}`,{ start_date:start_date, end_date:end_date, notes:"....."},{headers});
+    dispatch(addTaskToUserSuccess({  userId, taskId }));
     dispatch(clearUserTaskError());
   } catch (error) {
     dispatch(setUserTaskError("Error adding task to user. Please try again."));

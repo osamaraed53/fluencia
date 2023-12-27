@@ -3,13 +3,11 @@ import axios from "axios";
 import SearchCard from "./SearchCard.jsx";
 import {searchUsers,searchTeachers} from '../../ReduxSlice/searchSlice.js'
 import { useDispatch } from "react-redux";
-import PrivateRoute from '../../PrivateRoute.js'
 
-const Search = ({setOpenSearch , type_of_members ,dataOfSearch ,flag, setFlag}) => {
+const Search = ({setOpenSearch , type_of_members  ,flag, setFlag}) => {
 const [searchInput,setSearchInput ] = useState([])
 //   const  dataOfSearch =useSelector((state)=>state.user.users) 
   const dispatch = useDispatch()
-  PrivateRoute()
 
   useEffect(()=>{
   if(searchInput == ""){
@@ -20,16 +18,20 @@ const [searchInput,setSearchInput ] = useState([])
 
   const handleSearch = (input) => {
     setSearchInput(input);
-    if(type_of_members=="teacher"){
-      dispatch(searchTeachers(input))
+    const searchData = type_of_members=="teacher" ? searchTeachers :searchUsers
+   
+    dispatch(searchData(input))
+    // if(type_of_members=="teacher"){
+    //   dispatch(searchTeachers(input))
 
-    }
-    else if(type_of_members=="student"){
-    dispatch(searchUsers(input))
+    // }
+    // else if(type_of_members=="student"){
+    // dispatch(searchUsers(input))
 
-  }else{
-    alert("there ara a smothing wrong")
-  }
+
+  // }else{
+  //   alert("there ara a smothing wrong")
+  // }
   }
 
 
@@ -101,7 +103,7 @@ const handelCloseOpenSearch=()=>{
         className="absolute top-2 right-2 text-4xl text-white"
         onClick={()=>{handelCloseOpenSearch()}}
         > X</button> 
-        <SearchCard members={dataOfSearch} type_of_members={type_of_members}   flag={flag} setFlag={setFlag} />
+        <SearchCard  type_of_members={type_of_members}   flag={flag} setFlag={setFlag} />
       </div>
     </>
   );

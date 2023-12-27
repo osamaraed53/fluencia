@@ -4,8 +4,8 @@ import podcast from "../../assets/podcast2.png";
 const ServiceTwo = () => {
   return (
     <>
-      <section className="bg-white dark:bg-gray-800">
-        <div className="container flex flex-col px-6 py-2 mx-auto space-y-6 lg:h-[20rem] lg:py-2 lg:flex-row lg:items-center   lg:px-16 pr-3  ">
+      <section id="OurPodcast" className="bg-white dark:bg-gray-800">
+        <div className="container flex  flex-col-reverse px-6 py-2 mx-auto space-y-6 lg:h-[20rem] lg:py-2 lg:flex-row lg:items-center   lg:px-16 pr-3  ">
           <div className="w-full lg:w-1/2 md:pl-8">
             <div className="lg:max-w-lg">
               <h1 className="text-3xl font-bold tracking-wide text-fluencia-dark-purple dark:text-white lg:text-4xl pl-0">

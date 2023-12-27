@@ -1,149 +1,226 @@
-import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {fetchAllUsers,softDeleteUser} from '../../ReduxSlice/usersSlice'
-const TableForUsers = () => {
-  const dispatch = useDispatch()
-  const tableItems = useSelector((state)=>state.user.users)
-  console.log(tableItems)
+import { fetchAllUsers, softDeleteUser } from "../../ReduxSlice/usersSlice";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUserLock } from "@fortawesome/free-solid-svg-icons";
+import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
-  useEffect(()=>{ 
+const TableForUsers = () => {
+  const dispatch = useDispatch();
+  const tableItems = useSelector((state) => state.user.users);
+  const [flag, setFlag] = useState(true);
+  console.log(tableItems);
+
+  useEffect(() => {
     dispatch(fetchAllUsers());
-  },[])
-  
-  const blockUser = (user_id)=>{
-    dispatch(softDeleteUser(user_id))
-  }
+  }, [flag]);
+
+  const blockUser = (user_id) => {
+    dispatch(softDeleteUser(user_id));
+    setFlag(!flag);
+  };
+
+  // for pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; // Adjust as needed
+  // for pagination
+  const canClickNext = useRef(10);
+  // for pagination
+  const handlePrevClick = () => {
+    canClickNext.current -= itemsPerPage;
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+  };
+  // for pagination
+  const handleNextClick = () => {
+    canClickNext.current += itemsPerPage;
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
 
   return (
-    <div className="max-w-screen-xl mx-auto px-4 md:px-8 mt-14">
-      <div className="items-start justify-between md:flex">
-        <div className="max-w-lg">
-          <h3 className="text-gray-800 text-xl font-bold sm:text-2xl">
-            All users
-          </h3>
-          <p className="text-gray-600 mt-2">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry.
-          </p>
+    <div>
+      <div className=" sm:-px-8 sm:px-8 py-4 overflow-x-auto mt-5 px-10">
+        <div className="font-bold text-xl md:mb-10">
+          <h1 className="text-5xl">
+            <span className="text-fluencia-purple tracking-wide">fluencia</span>
+            <span className="text-fluencia-light-purple">Users</span>
+          </h1>
         </div>
-        <div className="mt-3 md:mt-0">
-          {/* <a
-            href="javascript:void(0)"
-            className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm"
-          >
-            Add member
-          </a> */}
-        </div>
-      </div>
-      <div className="mt-12 shadow-sm border rounded-lg overflow-x-auto">
-        <table className="w-full table-auto text-sm text-left">
-          <thead className="text-gray-600 font-medium border-b">
-            <tr>
-              {/* <th className="py-3 px-6 flex items-center gap-x-4">
-                <div>
-                  <input
-                    type="checkbox"
-                    id="checkbox-all-items"
-                    className="checkbox-item peer hidden"
-                    checked={areAllChecked}
-                    onChange={handleCheckboxItems}
-                  />
-                  <label
-                    htmlFor="checkbox-all-items"
-                    className="relative flex w-5 h-5 bg-white peer-checked:bg-indigo-600 rounded-md border ring-offset-2 ring-indigo-600 duration-150 peer-active:ring cursor-pointer after:absolute after:inset-x-0 after:top-[3px] after:m-auto after:w-1.5 after:h-2.5 after:border-r-2 after:border-b-2 after:border-white after:rotate-45"
-                  ></label>
-                </div>
-                Username
-              </th> */}
-              <th className="py-3 px-6">first name</th>
-              <th className="py-3 px-6">Last name</th>
-              <th className="py-3 px-6">phone</th>
-              <th className="py-3 px-6">Email</th>
-              <th className="py-3 px-6">pay</th>
-            </tr>
-          </thead>
-          <tbody className="text-gray-600 divide-y">
-            {tableItems.map((item, idx) => (
-              <tr key={idx} className="odd:bg-gray-50 even:bg-white">
-                {/* <td className="px-6 py-4 whitespace-nowrap flex items-center gap-x-4">
-                  <div>
-                    <input
-                      type="checkbox"
-                      id={`checkbox-${idx}`}
-                      name={`checkbox-${idx}`}
-                      className="checkbox-item peer hidden"
-                      checked={checkboxItems[`checkbox${idx}`]}
-                      onChange={(e) => handleCheckboxChange(e, idx)}
-                    />
-                    <label
-                      htmlFor={`checkbox-${idx}`}
-                      className="relative flex w-5 h-5 bg-white peer-checked:bg-indigo-600 rounded-md border ring-offset-2 ring-indigo-600 duration-150 peer-active:ring cursor-pointer after:absolute after:inset-x-0 after:top-[3px] after:m-auto after:w-1.5 after:h-2.5 after:border-r-2 after:border-b-2 after:border-white after:rotate-45"
-                    ></label>
-                  </div>
-                  {item.name}
-                </td> */}
-                <td className="px-6 py-4 whitespace-nowrap">{item.first_name}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{item.last_name}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{item.phone}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{item.email}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{`${item.is_pay}`}</td>
-                <td className="text-right px-6 whitespace-nowrap">
-                  {/* <a
-                    href="javascript:void()"
-                    className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg"
-                  >
-                    Edit
-                  </a> */}
-                  <button
-                    onClick={()=>{blockUser(item.user_id)}}
-                    className="py-2 leading-none px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg"
-                  >
 
-                    block
-                  </button>
-                </td>
+        {/* <button onClick={()=>{setOpenAddAdminPopup(true)}} class="py-2 px-4 mb-3 bg-transparent text-fluencia-purple font-semibold border border-fluencia-purple rounded hover:bg-fluencia-purple hover:text-white hover:border-transparent transition ease-in duration-200 transform hover:-translate-y-1 active:translate-y-0">
+          Add new Faqs
+        </button> */}
+
+        <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
+          <table className="min-w-full leading-normal">
+            <thead>
+              <tr>
+                <th className="px-5 py-3 border-b-2 border-gray-200 bg-fluencia-dark-purple text-left text-xs font-semibold text-white uppercase tracking-wider">
+                  First name
+                </th>
+                <th className="px-5 py-3 border-b-2 border-gray-200 bg-fluencia-dark-purple text-left text-xs font-semibold text-white uppercase tracking-wider">
+                  Last name
+                </th>
+
+                <th className="px-5 py-3 border-b-2 border-gray-200 bg-fluencia-dark-purple text-left text-xs font-semibold text-white uppercase tracking-wider">
+                  Email
+                </th>
+                <th className="px-5 py-3 border-b-2 border-gray-200 bg-fluencia-dark-purple text-left text-xs font-semibold text-white uppercase tracking-wider">
+                  Phone
+                </th>
+                <th className="px-5 py-3 border-b-2 border-gray-200 bg-fluencia-dark-purple text-left text-xs font-semibold text-white uppercase tracking-wider">
+                  Is Pay
+                </th>
+                <th className="px-5 py-3 border-b-2 border-gray-200 bg-fluencia-dark-purple text-left text-xs font-semibold text-white uppercase tracking-wider">
+                  Action
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {tableItems
+                .slice(
+                  (currentPage - 1) * itemsPerPage,
+                  currentPage * itemsPerPage
+                )
+                .map((userData, idx) => (
+                  <tr key={idx}>
+                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                      <div className="flex items-center">
+                        <Link
+                        // to={`/OrderDetails/${userData.user_username}`}
+                        >
+                          <div className="ml-3">
+                            <p className="text-gray-900 text-start   whitespace-wrap ">
+                              {userData?.first_name}
+                            </p>
+                          </div>
+                        </Link>
+                      </div>
+                    </td>
+                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                      <p className="text-gray-900 text-start whitespace-wrap">
+                        {" "}
+                        {userData?.last_name}
+                      </p>
+                    </td>
+                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                      <p className="text-gray-900 text-start whitespace-wrap">
+                        {" "}
+                        {userData?.email}
+                      </p>
+                    </td>
+                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                      <p className="text-gray-900 text-start whitespace-wrap">
+                        {" "}
+                        {`+962${userData?.phone}`}
+                      </p>
+                    </td>
+                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                      <p className="text-gray-900 text-start whitespace-wrap">
+                        {" "}
+                        {`${userData.is_pay}`}
+                      </p>
+                    </td>
+
+                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                      <div className="flex space-x-2">
+                        {/* <button
+                              onClick={() =>
+                                handleEditAdminClick(userData)
+                              }
+                            >
+                              <svg
+                                class="text-teal-600 w-5 h-5 "
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                stroke-width="2"
+                                stroke="currentColor"
+                                fill="none"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              >
+                                {" "}
+                                <path stroke="none" d="M0 0h24v24H0z" />{" "}
+                                <path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />{" "}
+                                <path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3" />{" "}
+                                <line x1="16" y1="5" x2="19" y2="8" />
+                              </svg>
+                            </button> */}
+
+                        <button onClick={() => blockUser(userData?.user_id)}>
+                          <FontAwesomeIcon icon={faUserLock} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="px-5 py-5 bg-white flex flex-col xs:flex-row items-center xs:justify-between          ">
+          <div className="inline-flex mt-2 xs:mt-0">
+            <button
+              onClick={handlePrevClick}
+              disabled={currentPage === 1}
+              className={`text-sm text-white transition duration-150 ${
+                currentPage === 1
+                  ? "bg-gray-300"
+                  : "hover:bg-fluencia-yellow-first bg-fluencia-yellow-second"
+              } font-semibold py-2 px-4 rounded-l`}
+            >
+              Prev
+            </button>
+            &nbsp; &nbsp;
+            <button
+              onClick={handleNextClick}
+              disabled={tableItems.length - 1 < canClickNext.current}
+              className={`text-sm text-white transition duration-150 ${
+                tableItems.length - 1 < canClickNext.current
+                  ? "bg-gray-300"
+                  : "hover:bg-fluencia-yellow-first bg-fluencia-yellow-second"
+              } font-semibold py-2 px-4 rounded-r`}
+            >
+              Next
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
-
 export default TableForUsers;
 
+// const [areAllChecked, setAllChecked] = useState(false);
+// let [checkboxItems, setCheckboxItem] = useState({});
 
-  // const [areAllChecked, setAllChecked] = useState(false);
-  // let [checkboxItems, setCheckboxItem] = useState({});
+// set or unset all checkbox items
+// const handleCheckboxItems = () => {
+// setAllChecked(!areAllChecked);
+// tableItems.forEach((item, idx) => {
+//   checkboxItems[`checkbox${idx}`] = !areAllChecked;
+//   setCheckboxItem({ ...checkboxItems });
+// });
+// };
 
-  // set or unset all checkbox items
-  // const handleCheckboxItems = () => {
-    // setAllChecked(!areAllChecked);
-    // tableItems.forEach((item, idx) => {
-    //   checkboxItems[`checkbox${idx}`] = !areAllChecked;
-    //   setCheckboxItem({ ...checkboxItems });
-    // });
-  // };
+// Update checked value
+// const handleCheckboxChange = (e, idx) => {
+// setAllChecked(false);
+// setCheckboxItem({ ...checkboxItems, [`checkbox${idx}`]: e.target.checked });
+// };
 
-  // Update checked value
-  // const handleCheckboxChange = (e, idx) => {
-    // setAllChecked(false);
-    // setCheckboxItem({ ...checkboxItems, [`checkbox${idx}`]: e.target.checked });
-  // };
+// useEffect(() => {
+//   // Set properties with false value
+//   // tableItems.forEach((item, idx) => {
+//   //   checkboxItems[`checkbox${idx}`] = false;
+//   //   setCheckboxItem({ ...checkboxItems });
+//   // });
+// }, []);
 
-  // useEffect(() => {
-  //   // Set properties with false value
-  //   // tableItems.forEach((item, idx) => {
-  //   //   checkboxItems[`checkbox${idx}`] = false;
-  //   //   setCheckboxItem({ ...checkboxItems });
-  //   // });
-  // }, []);
-
-  // useEffect(() => {
-  //   // Check if all checkbox items are checked and update setAllChecked state
-  //   const checkboxItemsVal = Object.values(checkboxItems);
-  //   const checkedItems = checkboxItemsVal.filter((item) => item == true);
-  //   if (checkedItems.length == tableItems.length) setAllChecked(true);
-  // }, [checkboxItems]);
+// useEffect(() => {
+//   // Check if all checkbox items are checked and update setAllChecked state
+//   const checkboxItemsVal = Object.values(checkboxItems);
+//   const checkedItems = checkboxItemsVal.filter((item) => item == true);
+//   if (checkedItems.length == tableItems.length) setAllChecked(true);
+// }, [checkboxItems]);

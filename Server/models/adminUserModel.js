@@ -1,5 +1,6 @@
 const db = require("../models/db");
 
+
 const findByEmail = async (email) => {
   const result = await db.query('SELECT * FROM admin WHERE email = $1', [email]);
   return result.rows[0];
@@ -74,12 +75,13 @@ async function getTaskDetails(usersTaskId) {
     const result = await db.query(`
       SELECT users.first_name, 
              users.last_name, 
+             task.task_name,
              task.task_description, 
              task.task_url, 
              users_task.start_date, 
              users_task.end_date,
              users_task.submit_date,
-             users_task.answer_url
+             users_task.answer_url,users_task.show
       FROM users_task 
       JOIN users ON users_task.user_id = users.user_id
       JOIN task ON users_task.task_id = task.task_id
@@ -109,10 +111,10 @@ async function updateTaskForUser(usersTaskId, startDate, endDate, notes) {
   }
 }
 
-async function addTasktoUser(user_id, task_id, start_date, end_date, admin_id, notes) {
+async function addTasktoUser(user_id, task_id, start_date, end_date, admin_id, notes,course_id) {
   try {
-    const result = await db.query('INSERT INTO users_task(user_id, task_id, start_date, end_date, admin_id, notes) VALUES($1, $2, $3, $4, $5, $6) RETURNING users_task_id',
-     [user_id, task_id, start_date, end_date, admin_id, notes]);
+    const result = await db.query('INSERT INTO users_task(user_id, task_id, start_date, end_date, admin_id, notes,course_id,submit_date, answer_url) VALUES($1, $2, $3, $4, $5, $6,$7,null, null) RETURNING users_task_id',
+     [user_id, task_id, start_date, end_date, admin_id, notes,course_id]);
 
     return { message: 'The task has been added to the user successfully', addedTaskId: result.rows[0].users_task_id };
   } catch (error) {
@@ -212,6 +214,24 @@ async function addCoursetoUser(user_id, course_id, admin_id, notes) {
 }
 
 
+const updateAdminData = async ( first_name, last_name,email,phone ,admin_id) => {
+  const queryText =
+ ` UPDATE admin SET first_name = $2, last_name = $3,email=$4, phone=$5 WHERE admin_id = $1
+    RETURNING admin_id, first_name, last_name,email ,phone,picture;`
+  const values = [admin_id, first_name, last_name,email,phone];
+  const result=  await db.query(queryText, values);
+  return result.rows[0];
+};
+
+
+const GetUserInformation = async (admin_id) => {
+    
+  const result = await db.query('SELECT * FROM admin WHERE admin_id = $1 ', [
+    admin_id,
+  ]);
+  return result.rows[0];
+};
+
 
 module.exports = {
     findByEmail,
@@ -230,5 +250,7 @@ module.exports = {
     deleteCourseForUser,
     restoreCourseForUser,
     updateCoursetoUser,
-    addCoursetoUser
+    addCoursetoUser,
+    updateAdminData,
+    GetUserInformation
     };

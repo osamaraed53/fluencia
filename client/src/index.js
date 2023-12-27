@@ -5,9 +5,10 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { ThemeProvider } from "@material-tailwind/react";
 import { Provider } from "react-redux";
-import { persistor} from "./configureStore";
+import { persistor } from "./configureStore";
 import { PersistGate } from "redux-persist/integration/react";
 import store from "./configureStore";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -15,7 +16,9 @@ root.render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <ThemeProvider>
-          <App />
+          <GoogleOAuthProvider clientId="309025603886-f5k8c0qe5qtj4f3sc27rt4aeu0d6hvlr.apps.googleusercontent.com">
+            <App />
+          </GoogleOAuthProvider>
         </ThemeProvider>
       </PersistGate>
     </Provider>

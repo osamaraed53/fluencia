@@ -1,14 +1,7 @@
 // searchActions.js
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import Cookies from "js-cookie";
-
-const token = Cookies.get("accessToken");
-const headers = {
-  Authorization: `Bearer ${token}`,
-  "Content-Type": "application/json",
-};
-
+import headers from '../axiosInstance'
 
 // Action to search for teachers
 export const searchTeachers = (input) => async (dispatch) => {

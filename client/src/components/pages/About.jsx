@@ -1,4 +1,6 @@
 import React,{useEffect} from 'react'
+import mustafa from '../../assets/mustafa.webp'
+import osama from '../../assets/osama.jpg'
 
 const About = () => {
  
@@ -415,8 +417,8 @@ const About = () => {
           >
             <div className="relative overflow-hidden px-6">
               <img
-                src="https://tailone.tailwindtemplate.net/src/img/dummy/avatar2.png"
-                className="max-w-full h-auto mx-auto rounded-full bg-gray-50 grayscale"
+                src={osama}
+                className="max-w-full h-auto mx-auto rounded-full "
                 alt="title image"
               />
             </div>
@@ -533,8 +535,8 @@ const About = () => {
           >
             <div className="relative overflow-hidden px-6">
               <img
-                src="https://tailone.tailwindtemplate.net/src/img/dummy/avatar4.png"
-                className="max-w-full h-auto mx-auto rounded-full bg-gray-50 grayscale"
+                src={mustafa}
+                className="max-w-full h-auto mx-auto rounded-full "
                 alt="title image"
               />
             </div>

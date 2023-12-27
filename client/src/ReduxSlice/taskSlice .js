@@ -1,11 +1,13 @@
 // taskActions.js
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import headers from '../axiosInstance'
+import {toast} from 'react-toastify'
 
 // Action to fetch all tasks
 export const fetchTasks = () => async (dispatch) => {
   try {
-    const response = await axios.get("http://localhost:3000/GetTaskes");
+    const response = await axios.get("http://localhost:3000/GetTaskes",{headers});
     const tasks = response.data;
     dispatch(setTasks(tasks));
     dispatch(clearTaskError());
@@ -14,15 +16,61 @@ export const fetchTasks = () => async (dispatch) => {
   }
 };
 
-// Action to add a new task
-export const addTask = (taskData) => async (dispatch) => {
+
+// Action to fetch all tasks for admin
+export const fetchTasksforAdmin= (course_id) => async (dispatch) => {
   try {
-    const response = await axios.post("http://localhost:3000/addTask", taskData);
-    const newTask = response.data;
-    dispatch(addNewTask(newTask));
+    const response = await axios.get(`http://localhost:3000/GetTaskbyCourseID/${course_id}`,{headers});
+    const tasks = response.data;
+    dispatch(setTasks(tasks));
     dispatch(clearTaskError());
   } catch (error) {
+    dispatch(setTaskError("Error fetching tasks. Please try again."));
+  }
+};
+// Action to fetch all tasks for admin
+export const fetchTasksforUser= (course_id) => async (dispatch) => {
+  try {
+    const response = await axios.get(`http://localhost:3000/getTaskbyCoursIedandUserId/${course_id}`,{headers});
+    const tasks = response.data;
+    dispatch(setTasks(tasks));
+    dispatch(clearTaskError());
+  } catch (error) {
+    dispatch(setTaskError("Error fetching tasks. Please try again."));
+  }
+};
+
+
+// Action to add a new task
+export const addTask = (taskData ,course_id) => async (dispatch) => {
+  try {
+    const response = await axios.post(`http://localhost:3000/addTask/${course_id}`, taskData,{headers});
+    const newTask = response.data.task_id;
+    
+    dispatch(addNewTask(newTask));
+    dispatch(clearTaskError());
+
+    toast.success(' Update successful! !', {
+      position: 'bottom-right',
+      autoClose: 3000, 
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+
+
+  } catch (error) {
     dispatch(setTaskError("Error adding a new task. Please try again."));
+    toast.error(' Error adding a new task !', {
+      position: 'top-center',
+      autoClose: 3000, // Close the toast after 3 seconds
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    
+    });
   }
 };
 
@@ -41,7 +89,7 @@ export const updateTask = (taskId, updatedData) => async (dispatch) => {
 // Action to soft delete a task
 export const softDeleteTask = (taskId) => async (dispatch) => {
   try {
-    await axios.delete(`http://localhost:3000/SoftdeleteTask/${taskId}`);
+    await axios.put(`http://localhost:3000/SoftdeleteTask/${taskId}`,{},{headers});
     dispatch(softDeleteExistingTask(taskId));
     dispatch(clearTaskError());
   } catch (error) {
@@ -65,6 +113,7 @@ const taskSlice = createSlice({
   name: "task",
   initialState: {
     tasks: [],
+    new_task_id :null, 
     taskError: null,
   },
   reducers: {
@@ -73,6 +122,7 @@ const taskSlice = createSlice({
     },
     addNewTask: (state, action) => {
       state.tasks.push(action.payload);
+      state.new_task_id = action.payload;
     },
     updateExistingTask: (state, action) => {
       const updatedTask = action.payload;

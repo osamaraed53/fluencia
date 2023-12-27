@@ -8,32 +8,30 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchActiveCourses,
   softDeleteCourse,
+  GetCoursesByTeacher,
 } from "../../ReduxSlice/courseSlice";
-import PrivateRoute from '../../PrivateRoute'
-import {fetchCoursesForUser} from '../../ReduxSlice/courseUserSlice'
+import CheckTypeOfUser from "../../PrivateRoute";
+import { fetchCoursesForUser } from "../../ReduxSlice/courseUserSlice";
 
-const ActiveCourses = ({courses ,flag,setFlag}) => {
-
-  const type = PrivateRoute()
-
-
+const ActiveCourses = ({ courses, flag, setFlag }) => {
+  const type = CheckTypeOfUser();
   // for create new class popUp
   const [isOpenAddNewClass, setOpenAddNewClass] = useState(false);
 
   // use to dispatch type of action
   const dispatch = useDispatch();
   useEffect(() => {
-    if(type=="admin"){
-    dispatch(fetchActiveCourses());
-    }else if(type == "student"){
-      dispatch(fetchCoursesForUser());
-    }
-  }, [ flag]);
+    const fetchCourse =type == "student"?  fetchCoursesForUser: type == "admin"? fetchActiveCourses: GetCoursesByTeacher;
+    dispatch(fetchCourse());
+  }, [flag]);
+
   // for soft delete (hidden course)
   const hiddenCourse = (course_id) => {
     dispatch(softDeleteCourse(course_id));
     setFlag(!flag);
   };
+
+  console.log();
 
   // for pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -61,35 +59,40 @@ const ActiveCourses = ({courses ,flag,setFlag}) => {
         <div className="max-w-screen-xl mx-auto px-4 md:px-8">
           <div className="items-start justify-between sm:flex">
             <div>
-              <h4 className="text-gray-800 text-xl font-semibold">
-                All Classes
-              </h4>
+            <h4 className=" text-4xl font-semibold text-fluencia-dark-purple">
+              {" "}
+              <span className="text-fluencia-purple tracking-wide">
+                fluencia
+              </span>
+              <span className="text-fluencia-light-purple">Class</span>
+            </h4>
               <p className="mt-2 text-gray-600 text-base sm:text-sm">
-                Text text text text
               </p>
             </div>
-{  (type == "admin")  &&   <button
-              onClick={() => {
-                setOpenAddNewClass(true);
-              }}
-              className="inline-flex items-center justify-center gap-1 py-2 px-3 mt-2 font-medium text-sm text-center text-white bg-fluencia-yellow-first hover:bg-fluencia-yellow-second active:bg-fluencia-yellow-second rounded-lg sm:mt-0"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
+            {type == "admin" && (
+              <button
+                onClick={() => {
+                  setOpenAddNewClass(true);
+                }}
+                className="inline-flex items-center justify-center gap-1 py-2 px-3 mt-2 font-medium text-sm text-center text-white bg-fluencia-yellow-first hover:bg-fluencia-yellow-second active:bg-fluencia-yellow-second rounded-lg sm:mt-0"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 6v12m6-6H6"
-                />
-              </svg>
-              Add Class
-            </button> }
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 6v12m6-6H6"
+                  />
+                </svg>
+                Add Class
+              </button>
+            )}
           </div>
 
           <ul className="mt-16 grid  gap-5 sm:grid-cols-2 lg:grid-cols-3">

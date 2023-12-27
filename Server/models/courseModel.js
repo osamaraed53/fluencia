@@ -157,7 +157,22 @@ async function GetCourseId(user_id){
 
 
 //______________________________________________________________________________________________
+async function UpdateTeacher(courseId, newTeacherId) {
+  const queryText = `
+    UPDATE courses
+    SET admin_id = $1
+    WHERE course_id = $2;
+  `;
 
+  const values = [newTeacherId, courseId];
+
+  try {
+    await db.query(queryText, values);
+  } catch (error) {
+    console.error("Failed to change course teacher in the model: ", error);
+    throw new Error("Failed to change course teacher in the model");
+  }
+}
 
   module.exports = {
     addCourse,
@@ -168,4 +183,5 @@ async function GetCourseId(user_id){
     GetCoursedeleted,
     GetCourseById,
     GetCourseId,
+    UpdateTeacher
   };

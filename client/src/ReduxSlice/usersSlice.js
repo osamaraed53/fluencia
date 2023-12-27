@@ -1,13 +1,8 @@
 // userActions.js
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import Cookies from "js-cookie";
 
-const token = Cookies.get("accessToken");
-const headers = {
-  Authorization: `Bearer ${token}`,
-  "Content-Type": "application/json",
-};
+import headers from '../axiosInstance'
 
 
 // Action to fetch all users
@@ -39,8 +34,9 @@ export const fetchUserById = (userId) => async (dispatch) => {
 // Action to fetch deleted users
 export const fetchDeletedUsers = () => async (dispatch) => {
   try {
-    const response = await axios.get("http://localhost:3000/GetDeletedUsers",{});
+    const response = await axios.get("http://localhost:3000/GetDeletedUsers",{headers});
     const deletedUsers = response.data;
+    console.log(deletedUsers)
     dispatch(setDeletedUsers(deletedUsers));
     dispatch(clearUserError());
   } catch (error) {
@@ -63,7 +59,7 @@ export const softDeleteUser = (userId) => async (dispatch) => {
 // Action to restore a soft-deleted user
 export const restoreUser = (userId) => async (dispatch) => {
   try {
-    await axios.put(`http://localhost:3000/RestoreUser/${userId}`,{},{});
+    await axios.put(`http://localhost:3000/RestoreUser/${userId}`,{},{headers});
     dispatch(restoreSoftDeletedUser(userId));
     dispatch(clearUserError());
   } catch (error) {

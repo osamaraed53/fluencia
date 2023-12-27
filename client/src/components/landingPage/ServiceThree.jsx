@@ -4,7 +4,7 @@ import ebook from "../../assets/ebook2.png";
 const ServiceThree = () => {
   return (
     <>
-      <section className="bg-white dark:bg-gray-800">
+      <section id="EBook" className="bg-white dark:bg-gray-800">
         <div className="container flex flex-col px-6 py-10 mx-auto space-y-6 lg:h-[20rem] lg:py-16 lg:flex-row lg:items-center   lg:px-16 pr-3  ">
           <div className="flex items-center justify-center w-full h-96 lg:w-1/2">
             <img

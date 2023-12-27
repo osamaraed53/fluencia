@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const PayPlans = () => {
   return (
     <>
-      <div className="text-center font-semibold">
+      <div id="pay" className="text-center font-semibold scroll-smooth">
         <h1 className="text-5xl">
           <span className="text-fluencia-purple tracking-wide">fluencia</span>
           <span className="text-fluencia-light-purple">Plans</span>
@@ -15,7 +15,7 @@ const PayPlans = () => {
         </p>
       </div>
       <section className="bg-white dark:bg-gray-900">
-        <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
+        <div className="py-8 px-4 mx-auto max-w-screen lg:py-16 lg:px-6">
           {/* <div className="mx-auto max-w-screen-md text-center mb-8 lg:mb-12">
             <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
               Designed for business teams like yours
@@ -25,9 +25,9 @@ const PayPlans = () => {
               and capital can unlock long-term value and drive economic growth.
             </p>
           </div> */}
-          <div className="space-y-8 lg:grid lg:grid-cols-3 sm:gap-6 xl:gap-10 lg:space-y-0 mb-24">
+          <div className="space-y-8  lg:grid lg:grid-cols-3 sm:gap-6 xl:gap-10 lg:space-y-0 mb-24">
             {/* Pricing Card */}
-            <div className="flex flex-col p-6 mx-auto max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100  dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white hover:scale-125 duration-300 shadow-xl shadow-fluencia-purple/50">
+            <div className="flex flex-col p-6 mx-auto max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100  dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white  duration-300 shadow-xl shadow-fluencia-purple/50">
               <h3 className="mb-4 text-2xl font-semibold ">Month</h3>
               {/* <p className="font-light text-gray-500 sm:text-lg dark:text-gray-400">
                 Best option for personal use &amp; for your next project.
@@ -52,7 +52,7 @@ const PayPlans = () => {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span>Individual configuration</span>
+                  <span>E-book For Free</span>
                 </li>
                 <li className="flex items-center space-x-3">
                   {/* Icon */}
@@ -86,7 +86,7 @@ const PayPlans = () => {
                   </svg>
                   <span>
                     Team size:{" "}
-                    <span className="font-semibold">1 developer</span>
+                    <span className="font-semibold">20 student</span>
                   </span>
                 </li>
                 <li className="flex items-center space-x-3">
@@ -136,7 +136,7 @@ const PayPlans = () => {
                 </Link>
             </div>
             {/* Pricing Card */}
-            <div className="flex flex-col p-6 mx-auto max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100  dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white hover:scale-125 duration-300 shadow-xl shadow-fluencia-purple/50">
+            <div className="flex flex-col p-6 mx-auto max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100  dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white  duration-300 shadow-xl shadow-fluencia-purple/50">
               <h3 className="mb-4 text-2xl font-semibold">Two Months</h3>
               {/* <p className="font-light text-gray-500 sm:text-lg dark:text-gray-400">
                 Relevant for multiple users, extended &amp; premium support.
@@ -161,7 +161,7 @@ const PayPlans = () => {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span>Individual configuration</span>
+                  <span>E-book For Free</span>
                 </li>
                 <li className="flex items-center space-x-3">
                   {/* Icon */}
@@ -195,7 +195,7 @@ const PayPlans = () => {
                   </svg>
                   <span>
                     Team size:{" "}
-                    <span className="font-semibold">10 developers</span>
+                    <span className="font-semibold">10 student</span>
                   </span>
                 </li>
                 <li className="flex items-center space-x-3">
@@ -245,7 +245,7 @@ const PayPlans = () => {
                 </Link>
             </div>
             {/* Pricing Card */}
-            <div className="flex flex-col p-6 mx-auto max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100  dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white hover:scale-125 duration-300 shadow-xl shadow-fluencia-purple/50">
+            <div className="flex flex-col p-6 mx-auto max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100  dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white  duration-300 shadow-xl shadow-fluencia-purple/50">
               <h3 className="mb-4 text-2xl font-semibold">Three Month</h3>
               {/* <p className="font-light text-gray-500 sm:text-lg dark:text-gray-400">
                 Best for large scale uses and extended redistribution rights.
@@ -270,7 +270,7 @@ const PayPlans = () => {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span>Individual configuration</span>
+                  <span>E-book For Free</span>
                 </li>
                 <li className="flex items-center space-x-3">
                   {/* Icon */}
@@ -304,7 +304,7 @@ const PayPlans = () => {
                   </svg>
                   <span>
                     Team size:{" "}
-                    <span className="font-semibold">100+ developers</span>
+                    <span className="font-semibold">2 student</span>
                   </span>
                 </li>
                 <li className="flex items-center space-x-3">

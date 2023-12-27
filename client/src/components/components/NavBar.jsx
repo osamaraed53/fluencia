@@ -1,52 +1,33 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../assets/fluencia.png";
-import SideBarContext from "../context/SideBarContext";
+import logo from "../../assets/fluencia.png";
+import SideBarContext from "../../context/SideBarContext";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../ReduxSlice/AuthenticationSlice";
-import {logoutAdmin} from '../ReduxSlice/AuthenticationAdminSlice';
-import Cookies from "js-cookie";
+import { logout } from "../../ReduxSlice/AuthenticationSlice";
+import {logoutAdmin} from '../../ReduxSlice/AuthenticationAdminSlice';
+import CheckTypeOfUser  from '../../PrivateRoute'
+
+
 const NavBar = () => {
+  const type = CheckTypeOfUser()
 
+   // const { isSidebarOpen, setSidebarOpen } = useContext(SideBarContext);
 
-
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { isSidebarOpen, setSidebarOpen } = useContext(SideBarContext);
   // to change navbar and sign out
   const signInUser = useSelector((state) => state.auth.isAuthenticated);
   const signInAdmin = useSelector((state) => state.authForAdmin.isAuthenticated);
-
-
-
-  // if have token before 
-  const token = Cookies.get("accessToken")
-  if(token){
-    if(signInUser ===false && signInAdmin===false){
-      Cookies.remove("accessToken")
-    }
-    
-  }
+  const { isSidebarOpen, setSidebarOpen } = useContext(SideBarContext);
 
   const dispatch = useDispatch();
   //  I am use Navigate To make the page reload
   const navigate = useNavigate();
 
-  // for toggleDropdown for My Account
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
+  
 
-  // sign out function based on reduser
+  // sign out function based on reduse
   const signOut = () => {
-    if(signInUser == true){
-    dispatch(logout());
-    window.sessionStorage.clear();
-    Cookies.remove("accessToken")
-    }
-    if(signInAdmin == true){
-      dispatch(logoutAdmin());
-      window.sessionStorage.clear();
-    }
+    const logOut = (type === 'student') ?logout  :logoutAdmin
+    dispatch(logOut());
   };
 
   //  to chamge nav bar if login Or not
@@ -77,9 +58,9 @@ const NavBar = () => {
           </span>
         </div>
         <div className="invisible absolute z-50 flex text-center w-full flex-col bg-fluencia-purple rounded-xl py-1 px-4 text-white shadow-xl group-hover:visible">
-          < Link to={'/login'} className=" my-2 block border-b border-gray-300 py-1 font-semibold text-white hover:text-gray-200 md:mx-2">
+          < Link to={'/profile'} className=" my-2 block border-b border-gray-300 py-1 font-semibold text-white hover:text-gray-200 md:mx-2">
          
-           <p>Shipper</p> 
+           <p>profile</p> 
           </Link>
           <button onClick={()=>signOut()} className="my-2 block border-b border-gray-300 py-1 font-semibold text-white hover:text-gray-200 md:mx-2">
            <p>LogOut</p> 
@@ -105,9 +86,9 @@ const NavBar = () => {
         </Link>
       </div>
     );
-
+    
   const isHomePage =
-    window.location.pathname === "/" || window.location.pathname === "/Contact";
+    window.location.pathname === "/" || window.location.pathname === "/Contact" || window.location.pathname === "/about";
 
   const sideBarButton = isHomePage ? null : (
     <button

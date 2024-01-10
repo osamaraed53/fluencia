@@ -49,7 +49,6 @@ const TaskDetails = () => {
         }, 3000);
       } catch (error) {
         console.log(error);
-        dispatch(setError("Invalid credentials. Please try again."));
         toast.error("Invalid. Please try again.", {
           position: "bottom-right",
           autoClose: 2000, // Close the toast after 3 seconds
